@@ -17,9 +17,9 @@ type GameField struct {
 
 func CreateGameField(fie [8][]cards.Card, fre [4][]cards.Card, hom [4][]cards.Card) (GameField, error) {
 	allCards := slices.Concat(
-		fie[0], fie[1], fie[2], fie[3], fie[4], fie[5], fie[6], fie[7], 
-		fre[0], fre[1], fre[2], fre[3], 
-		hom[0], hom[1], hom[2], hom[3]
+		fie[0], fie[1], fie[2], fie[3], fie[4], fie[5], fie[6], fie[7],
+		fre[0], fre[1], fre[2], fre[3],
+		hom[0], hom[1], hom[2], hom[3],
 	)
 
 	if len(allCards) != 52 {
@@ -35,7 +35,7 @@ func CreateGameField(fie [8][]cards.Card, fre [4][]cards.Card, hom [4][]cards.Ca
 	}
 
 	if !checkFreeCell(fre) {
-		return GameField{} fmt.Errorf("cards in free cell are invalid")
+		return GameField{}, fmt.Errorf("cards in free cell are invalid")
 	}
 
 	return GameField{}, nil
@@ -63,11 +63,11 @@ func checkHomeCell(hom [4][]cards.Card) bool {
 		if inCellSuitSet.Cardinality() > 1 {
 			return false
 		} else if inCellSuitSet.Cardinality() == 1 {
-			overCellSuitSet = Append(overCellSuitSet, cell[0].GetSuitCode())
+			overCellSuitSlice = append(overCellSuitSlice, cell[0].GetSuitCode())
 		}
 	}
 
-	overCellSuitSet := mapset.NewSet[unit8]()
+	overCellSuitSet := mapset.NewSet[uint8]()
 	for _, s := range overCellSuitSlice {
 		overCellSuitSet.Add(s)
 	}
