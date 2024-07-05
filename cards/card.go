@@ -54,3 +54,16 @@ func (card Card) ToReadableCard() (ReadableCard, error) {
 
 	return ReadableCard{suit, num}, nil
 }
+
+func CreateCard(str string) (Card, error) {
+	if len(str) < 2 {
+		return Card{uint8(255)}, fmt.Errorf("cannot parse to Card: %s", str)
+	}
+
+	rc := ReadableCard{Suit: string(str[0]), Num: str[1:]}
+	c, err := rc.ToCard()
+	if err != nil {
+		return Card{uint8(255)}, fmt.Errorf("cannot parse to Card: %s", str)
+	}
+	return c, nil
+}

@@ -146,3 +146,58 @@ func TestCard_ToReadableCard(t *testing.T) {
 		})
 	}
 }
+
+func TestCreateCard(t *testing.T) {
+	type args struct {
+		str string
+	}
+	tests := []struct {
+		name    string
+		args    args
+		want    Card
+		wantErr bool
+	}{
+		{
+			name:    "CreateCard Normal",
+			args:    args{"S1"},
+			want:    Card{uint8(1)},
+			wantErr: false,
+		},
+		{
+			name:    "CreateCard Normal",
+			args:    args{"S13"},
+			want:    Card{uint8(13)},
+			wantErr: false,
+		},
+		{
+			name:    "CreateCard Error1",
+			args:    args{""},
+			want:    Card{uint8(255)},
+			wantErr: true,
+		},
+		{
+			name:    "CreateCard Error2",
+			args:    args{"a"},
+			want:    Card{uint8(255)},
+			wantErr: true,
+		},
+		{
+			name:    "CreateCard Error2",
+			args:    args{"C99"},
+			want:    Card{uint8(255)},
+			wantErr: true,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got, err := CreateCard(tt.args.str)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("CreateCard() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("CreateCard() got = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
