@@ -21,6 +21,14 @@ func (rCard ReadableCard) ToCard() (Card, error) {
 		suitCode = 2
 	case "♦":
 		suitCode = 3
+	case "S":
+		suitCode = 0
+	case "H":
+		suitCode = 1
+	case "C":
+		suitCode = 2
+	case "D":
+		suitCode = 3
 	default:
 		return Card{uint8(255)}, fmt.Errorf("failed to convert suit: %s", rCard.Suit)
 	}
@@ -36,6 +44,9 @@ func (rCard ReadableCard) ToCard() (Card, error) {
 			numCode = 12
 		case "K":
 			numCode = 13
+		case "T":
+			numCode = 10
+
 		default:
 			return Card{uint8(255)}, fmt.Errorf("failed to convert number: %s", rCard.Num)
 		}
