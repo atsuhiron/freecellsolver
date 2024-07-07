@@ -2,6 +2,7 @@ package cards
 
 import (
 	"fmt"
+	"github.com/freecellsolver/consts"
 	"strconv"
 )
 
@@ -10,11 +11,11 @@ type Card struct {
 }
 
 func (card Card) GetSuitCode() uint8 {
-	return card.Code >> 5
+	return card.Code >> consts.SS
 }
 
 func (card Card) GetNumCode() uint8 {
-	return card.Code & 0x1f // 0x0f にする
+	return card.Code & 0x0f
 }
 
 func (card Card) IsBlack() bool {
@@ -37,7 +38,7 @@ func (card Card) ToReadableCard() (ReadableCard, error) {
 		return ReadableCard{}, fmt.Errorf("failed to convert suit: %d", suitCode)
 	}
 
-	numCode := card.Code - suitCode<<5
+	numCode := card.Code - suitCode<<consts.SS
 	num := ""
 	switch numCode {
 	case 1:

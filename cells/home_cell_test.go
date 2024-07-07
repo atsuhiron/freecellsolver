@@ -29,7 +29,7 @@ func TestHomeCell_CanPlace(t *testing.T) {
 				},
 				SuitCode: uint8(0),
 			},
-			args: args{card: cards.Card{Code: uint8(33)}},
+			args: args{card: cards.Card{Code: uint8(17)}},
 			want: false,
 		},
 		{

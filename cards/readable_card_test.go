@@ -151,37 +151,37 @@ func TestReadableCard_ToCard(t *testing.T) {
 		{
 			name:    "ToCard ♥5",
 			fields:  fields{"♥", "5"},
-			want:    Card{uint8(37)},
+			want:    Card{uint8(21)},
 			wantErr: false,
 		},
 		{
 			name:    "ToCard H5",
 			fields:  fields{"H", "5"},
-			want:    Card{uint8(37)},
+			want:    Card{uint8(21)},
 			wantErr: false,
 		},
 		{
 			name:    "ToCard ♣10",
 			fields:  fields{"♣", "10"},
-			want:    Card{uint8(74)},
+			want:    Card{uint8(42)},
 			wantErr: false,
 		},
 		{
 			name:    "ToCard C10",
 			fields:  fields{"C", "10"},
-			want:    Card{uint8(74)},
+			want:    Card{uint8(42)},
 			wantErr: false,
 		},
 		{
 			name:    "ToCard ♦K",
 			fields:  fields{"♦", "K"},
-			want:    Card{uint8(109)},
+			want:    Card{uint8(61)},
 			wantErr: false,
 		},
 		{
 			name:    "ToCard DK",
 			fields:  fields{"D", "K"},
-			want:    Card{uint8(109)},
+			want:    Card{uint8(61)},
 			wantErr: false,
 		},
 		{

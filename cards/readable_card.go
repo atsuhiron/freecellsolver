@@ -2,6 +2,7 @@ package cards
 
 import (
 	"fmt"
+	"github.com/freecellsolver/consts"
 	"strconv"
 )
 
@@ -56,5 +57,5 @@ func (rCard ReadableCard) ToCard() (Card, error) {
 		}
 	}
 
-	return Card{suitCode<<5 + uint8(numCode)}, nil
+	return Card{suitCode<<consts.SS + uint8(numCode)}, nil
 }
