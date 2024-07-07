@@ -13,6 +13,10 @@ func (card Card) GetSuitCode() uint8 {
 	return card.Code >> 5
 }
 
+func (card Card) GetNumCode() uint8 {
+	return card.Code & 0x1f // 0x0f にする
+}
+
 func (card Card) IsBlack() bool {
 	return card.GetSuitCode()%2 == 0
 }

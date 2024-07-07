@@ -201,3 +201,50 @@ func TestCreateCard(t *testing.T) {
 		})
 	}
 }
+
+func TestCard_GetNumCode(t *testing.T) {
+	type fields struct {
+		Code uint8
+	}
+	tests := []struct {
+		name   string
+		fields fields
+		want   uint8
+	}{
+		{
+			name:   "GetNumCode 1",
+			fields: fields{uint8(1)}, // ♠A
+			want:   uint8(1),
+		},
+		{
+			name:   "GetNumCode 2",
+			fields: fields{uint8(2)}, // ♠2
+			want:   uint8(2),
+		},
+		{
+			name:   "GetNumCode 3",
+			fields: fields{uint8(33)}, // ♥A
+			want:   uint8(1),
+		},
+		{
+			name:   "GetNumCode 4",
+			fields: fields{uint8(74)}, // ♣10
+			want:   uint8(10),
+		},
+		{
+			name:   "GetNumCode 5",
+			fields: fields{uint8(109)}, // ♦K
+			want:   uint8(13),
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			card := Card{
+				Code: tt.fields.Code,
+			}
+			if got := card.GetNumCode(); got != tt.want {
+				t.Errorf("GetNumCode() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
