@@ -3,13 +3,17 @@ package cells
 import "github.com/freecellsolver/cards"
 
 type FieldCell struct {
-	cardStack []cards.Card
+	CardStack []cards.Card
 }
 
 func (fCell FieldCell) CanPlace(card cards.Card) bool {
-	if len(fCell.cardStack) == 0 {
+	if len(fCell.CardStack) == 0 {
 		return true
 	}
 
-	return fCell.cardStack[len(fCell.cardStack)-1].IsBlack() != card.IsBlack() // xor
+	if fCell.CardStack[len(fCell.CardStack)-1].IsBlack() == card.IsBlack() {
+		// same color
+		return false
+	}
+	return card.GetNumCode() == fCell.CardStack[len(fCell.CardStack)-1].GetNumCode()-uint8(1)
 }
