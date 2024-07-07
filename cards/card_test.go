@@ -26,17 +26,17 @@ func TestCard_GetSuitCode(t *testing.T) {
 		},
 		{
 			name:   "GetSuitCode 3",
-			fields: fields{uint8(33)}, // ♥A
+			fields: fields{uint8(17)}, // ♥A
 			want:   uint8(1),
 		},
 		{
 			name:   "GetSuitCode 4",
-			fields: fields{uint8(74)}, // ♣10
+			fields: fields{uint8(42)}, // ♣10
 			want:   uint8(2),
 		},
 		{
 			name:   "GetSuitCode 5",
-			fields: fields{uint8(109)}, // ♦K
+			fields: fields{uint8(61)}, // ♦K
 			want:   uint8(3),
 		},
 	}
@@ -68,17 +68,17 @@ func TestCard_IsBlack(t *testing.T) {
 		},
 		{
 			name:   "IsBlack Heart",
-			fields: fields{uint8(33)}, // ♥A
+			fields: fields{uint8(17)}, // ♥A
 			want:   false,
 		},
 		{
 			name:   "IsBlack Diamonds",
-			fields: fields{uint8(74)}, // ♣10
+			fields: fields{uint8(42)}, // ♣10
 			want:   true,
 		},
 		{
 			name:   "IsBlack Clover",
-			fields: fields{uint8(109)}, // ♦K
+			fields: fields{uint8(61)}, // ♦K
 			want:   false,
 		},
 	}
@@ -116,17 +116,17 @@ func TestCard_ToReadableCard(t *testing.T) {
 		},
 		{
 			name:   "ToReadableCard 3",
-			fields: fields{uint8(33)}, // ♥A
+			fields: fields{uint8(17)}, // ♥A
 			want:   ReadableCard{"♥", "A"},
 		},
 		{
 			name:   "ToReadableCard 4",
-			fields: fields{uint8(74)}, // ♣10
+			fields: fields{uint8(42)}, // ♣10
 			want:   ReadableCard{"♣", "10"},
 		},
 		{
 			name:   "ToReadableCard 5",
-			fields: fields{uint8(109)}, // ♦K
+			fields: fields{uint8(61)}, // ♦K
 			want:   ReadableCard{"♦", "K"},
 		},
 	}
@@ -223,17 +223,17 @@ func TestCard_GetNumCode(t *testing.T) {
 		},
 		{
 			name:   "GetNumCode 3",
-			fields: fields{uint8(33)}, // ♥A
+			fields: fields{uint8(17)}, // ♥A
 			want:   uint8(1),
 		},
 		{
 			name:   "GetNumCode 4",
-			fields: fields{uint8(74)}, // ♣10
+			fields: fields{uint8(42)}, // ♣10
 			want:   uint8(10),
 		},
 		{
 			name:   "GetNumCode 5",
-			fields: fields{uint8(109)}, // ♦K
+			fields: fields{uint8(61)}, // ♦K
 			want:   uint8(13),
 		},
 	}

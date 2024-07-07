@@ -44,7 +44,7 @@ func TestFieldCell_CanPlace(t *testing.T) {
 			name: "Filled stack: different color OK",
 			fields: fields{
 				CardStack: []cards.Card{
-					{uint8(34)},
+					{uint8(18)},
 				},
 			},
 			args: args{
@@ -56,7 +56,7 @@ func TestFieldCell_CanPlace(t *testing.T) {
 			name: "Filled stack: different color incorrect order NG",
 			fields: fields{
 				CardStack: []cards.Card{
-					{uint8(35)},
+					{uint8(19)},
 				},
 			},
 			args: args{
