@@ -19,13 +19,13 @@ func TestFreeCell_CanPlace(t *testing.T) {
 		want   bool
 	}{
 		{
-			name:   "CanPlace filled",
+			name:   "filled",
 			fields: fields{[]cards.Card{{uint8(1)}}},
 			args:   args{card: cards.Card{Code: uint8(2)}},
 			want:   false,
 		},
 		{
-			name:   "CanPlace empty",
+			name:   "empty",
 			fields: fields{[]cards.Card{}},
 			args:   args{card: cards.Card{Code: uint8(2)}},
 			want:   true,

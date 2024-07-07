@@ -15,27 +15,27 @@ func TestCard_GetSuitCode(t *testing.T) {
 		want   uint8
 	}{
 		{
-			name:   "GetSuitCode 1",
+			name:   "♠A",
 			fields: fields{uint8(1)}, // ♠A
 			want:   uint8(0),
 		},
 		{
-			name:   "GetSuitCode 2",
+			name:   "♠2",
 			fields: fields{uint8(2)}, // ♠2
 			want:   uint8(0),
 		},
 		{
-			name:   "GetSuitCode 3",
+			name:   "♥A",
 			fields: fields{uint8(17)}, // ♥A
 			want:   uint8(1),
 		},
 		{
-			name:   "GetSuitCode 4",
+			name:   "♣10",
 			fields: fields{uint8(42)}, // ♣10
 			want:   uint8(2),
 		},
 		{
-			name:   "GetSuitCode 5",
+			name:   "♦K",
 			fields: fields{uint8(61)}, // ♦K
 			want:   uint8(3),
 		},
@@ -62,22 +62,22 @@ func TestCard_IsBlack(t *testing.T) {
 		want   bool
 	}{
 		{
-			name:   "IsBlack Spade",
+			name:   "Spade",
 			fields: fields{uint8(1)}, // ♠A
 			want:   true,
 		},
 		{
-			name:   "IsBlack Heart",
+			name:   "Heart",
 			fields: fields{uint8(17)}, // ♥A
 			want:   false,
 		},
 		{
-			name:   "IsBlack Diamonds",
+			name:   "Clover",
 			fields: fields{uint8(42)}, // ♣10
 			want:   true,
 		},
 		{
-			name:   "IsBlack Clover",
+			name:   "Diamonds",
 			fields: fields{uint8(61)}, // ♦K
 			want:   false,
 		},
@@ -105,27 +105,27 @@ func TestCard_ToReadableCard(t *testing.T) {
 		wantErr bool
 	}{
 		{
-			name:   "ToReadableCard 1",
+			name:   "♠A",
 			fields: fields{uint8(1)}, // ♠A
 			want:   ReadableCard{"♠", "A"},
 		},
 		{
-			name:   "ToReadableCard 2",
+			name:   "♠2",
 			fields: fields{uint8(2)}, // ♠2
 			want:   ReadableCard{"♠", "2"},
 		},
 		{
-			name:   "ToReadableCard 3",
+			name:   "♥A",
 			fields: fields{uint8(17)}, // ♥A
 			want:   ReadableCard{"♥", "A"},
 		},
 		{
-			name:   "ToReadableCard 4",
+			name:   "♣10",
 			fields: fields{uint8(42)}, // ♣10
 			want:   ReadableCard{"♣", "10"},
 		},
 		{
-			name:   "ToReadableCard 5",
+			name:   "♦K",
 			fields: fields{uint8(61)}, // ♦K
 			want:   ReadableCard{"♦", "K"},
 		},
@@ -158,31 +158,31 @@ func TestCreateCard(t *testing.T) {
 		wantErr bool
 	}{
 		{
-			name:    "CreateCard Normal",
+			name:    "Normal",
 			args:    args{"S1"},
 			want:    Card{uint8(1)},
 			wantErr: false,
 		},
 		{
-			name:    "CreateCard Normal",
+			name:    "Normal",
 			args:    args{"S13"},
 			want:    Card{uint8(13)},
 			wantErr: false,
 		},
 		{
-			name:    "CreateCard Error1",
+			name:    "Error: empty string",
 			args:    args{""},
 			want:    Card{uint8(255)},
 			wantErr: true,
 		},
 		{
-			name:    "CreateCard Error2",
+			name:    "Error: non-suit string",
 			args:    args{"a"},
 			want:    Card{uint8(255)},
 			wantErr: true,
 		},
 		{
-			name:    "CreateCard Error2",
+			name:    "Error: out of range number",
 			args:    args{"C99"},
 			want:    Card{uint8(255)},
 			wantErr: true,
@@ -212,27 +212,27 @@ func TestCard_GetNumCode(t *testing.T) {
 		want   uint8
 	}{
 		{
-			name:   "GetNumCode 1",
+			name:   "♠A",
 			fields: fields{uint8(1)}, // ♠A
 			want:   uint8(1),
 		},
 		{
-			name:   "GetNumCode 2",
+			name:   "♠2",
 			fields: fields{uint8(2)}, // ♠2
 			want:   uint8(2),
 		},
 		{
-			name:   "GetNumCode 3",
+			name:   "♥A",
 			fields: fields{uint8(17)}, // ♥A
 			want:   uint8(1),
 		},
 		{
-			name:   "GetNumCode 4",
+			name:   "♣10",
 			fields: fields{uint8(42)}, // ♣10
 			want:   uint8(10),
 		},
 		{
-			name:   "GetNumCode 5",
+			name:   "♦K",
 			fields: fields{uint8(61)}, // ♦K
 			want:   uint8(13),
 		},

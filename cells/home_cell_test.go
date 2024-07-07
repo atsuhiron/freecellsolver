@@ -20,7 +20,7 @@ func TestHomeCell_CanPlace(t *testing.T) {
 		want   bool
 	}{
 		{
-			name: "CanPlace different color",
+			name: "different color",
 			fields: fields{
 				CardStack: []cards.Card{
 					{uint8(1)},
@@ -33,7 +33,7 @@ func TestHomeCell_CanPlace(t *testing.T) {
 			want: false,
 		},
 		{
-			name: "CanPlace jump number",
+			name: "jump number",
 			fields: fields{
 				CardStack: []cards.Card{
 					{uint8(1)},
@@ -45,7 +45,7 @@ func TestHomeCell_CanPlace(t *testing.T) {
 			want: false,
 		},
 		{
-			name: "CanPlace correct order",
+			name: "correct order",
 			fields: fields{
 				CardStack: []cards.Card{
 					{uint8(1)},
@@ -57,7 +57,7 @@ func TestHomeCell_CanPlace(t *testing.T) {
 			want: true,
 		},
 		{
-			name: "CanPlace correct order first",
+			name: "correct order first",
 			fields: fields{
 				CardStack: []cards.Card{},
 				SuitCode:  uint8(0),
