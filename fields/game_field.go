@@ -18,6 +18,10 @@ type GameField struct {
 }
 
 func CreateGameField(fie [8][]cards.Card, fre [4][]cards.Card, hom map[uint8][]cards.Card) (GameField, error) {
+	if !checkHomeCell(hom) {
+		return GameField{}, fmt.Errorf("cards in home cell are invalid")
+	}
+
 	allCards := slices.Concat(
 		fie[0], fie[1], fie[2], fie[3], fie[4], fie[5], fie[6], fie[7],
 		fre[0], fre[1], fre[2], fre[3],
@@ -30,10 +34,6 @@ func CreateGameField(fie [8][]cards.Card, fre [4][]cards.Card, hom map[uint8][]c
 
 	if !checkUniqCards(allCards) {
 		return GameField{}, fmt.Errorf("cards are not unique")
-	}
-
-	if !checkHomeCell(hom) {
-		return GameField{}, fmt.Errorf("cards in home cell are invalid")
 	}
 
 	if !checkFreeCell(fre) {
