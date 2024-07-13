@@ -43,6 +43,52 @@ func CreateGameField(fie [8][]cards.Card, fre [4][]cards.Card, hom map[uint8][]c
 	return GameField{}, nil
 }
 
+func CreateGameFieldFromReadable(
+	fieR [8][]cards.ReadableCard,
+	freR [4][]cards.ReadableCard,
+	homR map[uint8][]cards.ReadableCard) (GameField, error) {
+	fie := [8][]cards.Card{}
+	for i, cellR := range fieR {
+		cell := make([]cards.Card, 0, len(cellR))
+		for _, cardR := range cellR {
+			card, err := cardR.ToCard()
+			if err != nil {
+				return GameField{}, err
+			}
+			cell = append(cell, card)
+		}
+		fie[i] = cell
+	}
+
+	fre := [4][]cards.Card{}
+	for i, cellR := range freR {
+		cell := make([]cards.Card, 0, len(cellR))
+		for _, cardR := range cellR {
+			card, err := cardR.ToCard()
+			if err != nil {
+				return GameField{}, err
+			}
+			cell = append(cell, card)
+		}
+		fre[i] = cell
+	}
+
+	hom := make(map[uint8][]cards.Card)
+	for _, suitCode := range suits {
+		cell := make([]cards.Card, 0, len(homR[suitCode]))
+		for _, cardR := range homR[suitCode] {
+			card, err := cardR.ToCard()
+			if err != nil {
+				return GameField{}, err
+			}
+			cell = append(cell, card)
+		}
+		hom[suitCode] = cell
+	}
+
+	return CreateGameField(fie, fre, hom)
+}
+
 func checkUniqCards(cards []cards.Card) bool {
 	cardSet := mapset.NewSet[uint8]()
 
