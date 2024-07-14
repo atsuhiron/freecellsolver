@@ -2,6 +2,7 @@ package fields
 
 import (
 	"fmt"
+	"github.com/freecellsolver/consts"
 	"slices"
 
 	mapset "github.com/deckarep/golang-set/v2"
@@ -13,8 +14,8 @@ var suits = []uint8{0, 1, 2, 3}
 
 type GameField struct {
 	Homes  map[uint8]cells.HomeCell
-	Frees  [4]cells.FreeCell
-	Fields [8]cells.FieldCell
+	Frees  [consts.LenFre]cells.FreeCell
+	Fields [consts.LenFie]cells.FieldCell
 }
 
 func CreateGameField(fie [][]cards.Card, fre [][]cards.Card, hom map[uint8][]cards.Card) (GameField, error) {
@@ -27,10 +28,10 @@ func CreateGameField(fie [][]cards.Card, fre [][]cards.Card, hom map[uint8][]car
 		return GameField{}, fmt.Errorf("cards in free cell are invalid")
 	}
 
-	if len(fie) != 8 {
+	if len(fie) != consts.LenFie {
 		return GameField{}, fmt.Errorf("length of field cell are invalid")
 	}
-	if len(fre) != 4 {
+	if len(fre) != consts.LenFre {
 		return GameField{}, fmt.Errorf("length of free cell are invalid")
 	}
 	allCards := slices.Concat(
@@ -46,8 +47,12 @@ func CreateGameField(fie [][]cards.Card, fre [][]cards.Card, hom map[uint8][]car
 	}
 
 	// convert
-	//homes := make(map[uint8]cells.HomeCell)
-	return GameField{}, nil
+	gf := GameField{
+		Homes:  convertHomeCell(hom),
+		Frees:  convertFreeCell(fre),
+		Fields: convertFieldCell(fie),
+	}
+	return gf, nil
 }
 
 func CreateGameFieldFromReadable(
@@ -138,4 +143,31 @@ func checkFreeCell(fre [][]cards.Card) bool {
 		}
 	}
 	return true
+}
+
+func convertHomeCell(hom map[uint8][]cards.Card) map[uint8]cells.HomeCell {
+	// TODO: ポインタに変える
+	homes := make(map[uint8]cells.HomeCell)
+	for i, cell := range hom {
+		homes[suits[i]] = cells.HomeCell{CardStack: cell}
+	}
+	return homes
+}
+
+func convertFreeCell(fre [][]cards.Card) [consts.LenFre]cells.FreeCell {
+	// TODO: ポインタに変える
+	frees := [consts.LenFre]cells.FreeCell{}
+	for i, cell := range fre {
+		frees[i] = cells.FreeCell{CardStack: cell}
+	}
+	return frees
+}
+
+func convertFieldCell(fie [][]cards.Card) [consts.LenFie]cells.FieldCell {
+	// TODO: ポインタに変える
+	fields := [consts.LenFie]cells.FieldCell{}
+	for i, cell := range fie {
+		fields[i] = cells.FieldCell{CardStack: cell}
+	}
+	return fields
 }
