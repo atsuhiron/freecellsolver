@@ -17,37 +17,44 @@ type GameField struct {
 	Fields [8]cells.FieldCell
 }
 
-func CreateGameField(fie [8][]cards.Card, fre [4][]cards.Card, hom map[uint8][]cards.Card) (GameField, error) {
+func CreateGameField(fie [][]cards.Card, fre [][]cards.Card, hom map[uint8][]cards.Card) (GameField, error) {
+	// validate
 	if !checkHomeCell(hom) {
 		return GameField{}, fmt.Errorf("cards in home cell are invalid")
-	}
-
-	allCards := slices.Concat(
-		fie[0], fie[1], fie[2], fie[3], fie[4], fie[5], fie[6], fie[7],
-		fre[0], fre[1], fre[2], fre[3],
-		hom[uint8(0)], hom[uint8(1)], hom[uint8(2)], hom[uint8(3)],
-	)
-
-	if len(allCards) != 52 {
-		return GameField{}, fmt.Errorf("the number of cards is not 52: %d", len(allCards))
-	}
-
-	if !checkUniqCards(allCards) {
-		return GameField{}, fmt.Errorf("cards are not unique")
 	}
 
 	if !checkFreeCell(fre) {
 		return GameField{}, fmt.Errorf("cards in free cell are invalid")
 	}
 
+	if len(fie) != 8 {
+		return GameField{}, fmt.Errorf("length of field cell are invalid")
+	}
+	if len(fre) != 4 {
+		return GameField{}, fmt.Errorf("length of free cell are invalid")
+	}
+	allCards := slices.Concat(
+		fie[0], fie[1], fie[2], fie[3], fie[4], fie[5], fie[6], fie[7],
+		fre[0], fre[1], fre[2], fre[3],
+		hom[uint8(0)], hom[uint8(1)], hom[uint8(2)], hom[uint8(3)],
+	)
+	if len(allCards) != 52 {
+		return GameField{}, fmt.Errorf("the number of cards is not 52: %d", len(allCards))
+	}
+	if !checkUniqCards(allCards) {
+		return GameField{}, fmt.Errorf("cards are not unique")
+	}
+
+	// convert
+	//homes := make(map[uint8]cells.HomeCell)
 	return GameField{}, nil
 }
 
 func CreateGameFieldFromReadable(
-	fieR [8][]cards.ReadableCard,
-	freR [4][]cards.ReadableCard,
+	fieR [][]cards.ReadableCard,
+	freR [][]cards.ReadableCard,
 	homR map[uint8][]cards.ReadableCard) (GameField, error) {
-	fie := [8][]cards.Card{}
+	fie := make([][]cards.Card, 0, len(fieR))
 	for i, cellR := range fieR {
 		cell := make([]cards.Card, 0, len(cellR))
 		for _, cardR := range cellR {
@@ -60,7 +67,7 @@ func CreateGameFieldFromReadable(
 		fie[i] = cell
 	}
 
-	fre := [4][]cards.Card{}
+	fre := make([][]cards.Card, 0, len(freR))
 	for i, cellR := range freR {
 		cell := make([]cards.Card, 0, len(cellR))
 		for _, cardR := range cellR {
@@ -124,7 +131,7 @@ func checkHomeCell(hom map[uint8][]cards.Card) bool {
 	return true
 }
 
-func checkFreeCell(fre [4][]cards.Card) bool {
+func checkFreeCell(fre [][]cards.Card) bool {
 	for _, cell := range fre {
 		if len(cell) > 1 {
 			return false
