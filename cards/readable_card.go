@@ -57,5 +57,5 @@ func (rCard ReadableCard) ToCard() (Card, error) {
 		}
 	}
 
-	return Card{suitCode<<consts.SS + uint8(numCode)}, nil
+	return Card{suitCode<<consts.SShift + uint8(numCode)}, nil
 }

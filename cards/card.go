@@ -11,7 +11,7 @@ type Card struct {
 }
 
 func (card Card) GetSuitCode() uint8 {
-	return card.Code >> consts.SS
+	return card.Code >> consts.SShift
 }
 
 func (card Card) GetNumCode() uint8 {
@@ -38,7 +38,7 @@ func (card Card) ToReadableCard() (ReadableCard, error) {
 		return ReadableCard{}, fmt.Errorf("failed to convert suit: %d", suitCode)
 	}
 
-	numCode := card.Code - suitCode<<consts.SS
+	numCode := card.Code - suitCode<<consts.SShift
 	num := ""
 	switch numCode {
 	case 1:

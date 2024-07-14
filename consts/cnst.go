@@ -1,7 +1,7 @@
 package consts
 
-// SS suit shift
-const SS = uint8(4)
+// SShift suit shift
+const SShift = uint8(4)
 
 // LenFie the length of field cells
 const LenFie int = 8
