@@ -2,6 +2,7 @@ package cells
 
 import (
 	"github.com/freecellsolver/cards"
+	"reflect"
 	"testing"
 )
 
@@ -74,6 +75,51 @@ func TestHomeCell_CanPlace(t *testing.T) {
 			}
 			if got := hCell.CanPlace(tt.args.card); got != tt.want {
 				t.Errorf("CanPlace() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestHomeCell_GetEndSeq(t *testing.T) {
+	type fields struct {
+		CardStack []cards.Card
+		SuitCode  uint8
+	}
+	tests := []struct {
+		name   string
+		fields fields
+		want   []cards.Card
+	}{
+		{
+			name: "always returns empty 1",
+			fields: fields{
+				CardStack: []cards.Card{},
+				SuitCode:  uint8(0),
+			},
+			want: []cards.Card{},
+		},
+		{
+			name: "always returns empty 2",
+			fields: fields{
+				CardStack: []cards.Card{
+					{uint8(1)},
+					{uint8(2)},
+					{uint8(3)},
+					{uint8(4)},
+				},
+				SuitCode: uint8(0),
+			},
+			want: []cards.Card{},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			hCell := HomeCell{
+				CardStack: tt.fields.CardStack,
+				SuitCode:  tt.fields.SuitCode,
+			}
+			if got := hCell.GetEndSeq(); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("GetEndSeq() = %v, want %v", got, tt.want)
 			}
 		})
 	}

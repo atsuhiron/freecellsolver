@@ -1,6 +1,8 @@
 package cells
 
-import "github.com/freecellsolver/cards"
+import (
+	"github.com/freecellsolver/cards"
+)
 
 type HomeCell struct {
 	CardStack []cards.Card
@@ -15,4 +17,8 @@ func (hCell HomeCell) CanPlace(card cards.Card) bool {
 		return card.Code%32 == 1
 	}
 	return card.Code == hCell.CardStack[len(hCell.CardStack)-1].Code+1
+}
+
+func (hCell HomeCell) GetEndSeq() []cards.Card {
+	return make([]cards.Card, 0)
 }

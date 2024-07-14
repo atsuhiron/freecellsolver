@@ -6,4 +6,5 @@ import (
 
 type BaseCell interface {
 	CanPlace(card cards.Card) bool
+	GetEndSeq() []cards.Card
 }
