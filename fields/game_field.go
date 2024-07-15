@@ -14,17 +14,32 @@ type GameField struct {
 	Fields [consts.LenFie]cells.FieldCell
 }
 
-func (gf GameField) GetHashCode() [consts.LenHash]uint64 {
-	// home code
+func (gf GameField) CalcHashCode() [consts.LenHash]uint64 {
+	homeCode := calcHomeHash(gf.Homes)
+	freeCode := calcFreeHash(gf.Frees)
+	fieldCodes := calcFieldHash(gf.Fields)
+
+	hashCodes := [consts.LenHash]uint64{}
+	hashCodes[0] = (homeCode << 32) + freeCode
+	for i := 1; i < consts.LenHash; i++ {
+		hashCodes[i] = fieldCodes[i-1]
+	}
+	return hashCodes
+}
+
+func calcHomeHash(homes map[uint8]cells.HomeCell) uint64 {
+	// TODO: ポインタにする
 	homeCode := uint64(0)
 	for _, sc := range suits {
-		stack := gf.Homes[sc].CardStack
+		stack := homes[sc].CardStack
 		homeCode += uint64(stack[len(stack)-1].Code << (8 * sc))
 	}
+	return homeCode
+}
 
-	// free code
+func calcFreeHash(frees [consts.LenFre]cells.FreeCell) uint64 {
 	freeCardCodes := make([]uint64, consts.LenFre)
-	for i, cell := range gf.Frees {
+	for i, cell := range frees {
 		if len(cell.CardStack) == 0 {
 			// empty
 			freeCardCodes[i] = uint64(0)
@@ -39,9 +54,12 @@ func (gf GameField) GetHashCode() [consts.LenHash]uint64 {
 		freeCode += cardCode << (8 * i)
 	}
 
-	// field code
+	return freeCode
+}
+
+func calcFieldHash(fields [consts.LenFie]cells.FieldCell) [consts.MaxFieNum]uint64 {
 	fieldCardCodes := make(indexValue64, consts.LenFie)
-	for i, cell := range gf.Fields {
+	for i, cell := range fields {
 		fieldCardCodes[i][0] = uint64(i)
 
 		if len(cell.CardStack) == 0 {
@@ -54,7 +72,7 @@ func (gf GameField) GetHashCode() [consts.LenHash]uint64 {
 
 	sortedField := [consts.LenFie][]cards.Card{}
 	for i, ivp := range fieldCardCodes {
-		sortedField[i] = gf.Fields[ivp[1]].CardStack
+		sortedField[i] = fields[ivp[1]].CardStack
 	}
 
 	fieldCodes := [consts.MaxFieNum]uint64{}
@@ -68,12 +86,7 @@ func (gf GameField) GetHashCode() [consts.LenHash]uint64 {
 		fieldCodes[j] = fieldCode
 	}
 
-	hashCodes := [consts.LenHash]uint64{}
-	hashCodes[0] = (homeCode << 32) + freeCode
-	for i := 1; i < consts.LenHash; i++ {
-		hashCodes[i] = fieldCodes[i-1]
-	}
-	return hashCodes
+	return fieldCodes
 }
 
 type indexValue64 [][2]uint64
