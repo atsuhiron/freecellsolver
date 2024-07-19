@@ -32,7 +32,9 @@ func calcHomeHash(homes map[uint8]cells.HomeCell) uint64 {
 	homeCode := uint64(0)
 	for _, sc := range suits {
 		stack := homes[sc].CardStack
-		homeCode += uint64(stack[len(stack)-1].Code << (8 * sc))
+		if len(stack) != 0 {
+			homeCode += uint64(stack[len(stack)-1].Code) << (8 * sc)
+		}
 	}
 	return homeCode
 }
