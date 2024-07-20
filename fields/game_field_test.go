@@ -68,6 +68,116 @@ func TestGameField_CalcHashCode(t *testing.T) {
 	}
 }
 
+func TestGameField_IsFinished(t *testing.T) {
+	type fields struct {
+		Homes  map[uint8]cells.HomeCell
+		Frees  [consts.LenFre]cells.FreeCell
+		Fields [consts.LenFie]cells.FieldCell
+	}
+	tests := []struct {
+		name   string
+		fields fields
+		want   bool
+	}{
+		{
+			name: "empty",
+			fields: fields{
+				Homes: map[uint8]cells.HomeCell{
+					suits[0]: {[]cards.Card{}, uint8(0)},
+					suits[1]: {[]cards.Card{}, uint8(1)},
+					suits[2]: {[]cards.Card{}, uint8(2)},
+					suits[3]: {[]cards.Card{}, uint8(3)},
+				},
+				Frees: [consts.LenFre]cells.FreeCell{
+					{CardStack: []cards.Card{}},
+					{CardStack: []cards.Card{}},
+					{CardStack: []cards.Card{}},
+					{CardStack: []cards.Card{}},
+				},
+				Fields: [consts.LenFie]cells.FieldCell{
+					{CardStack: []cards.Card{}},
+					{CardStack: []cards.Card{}},
+					{CardStack: []cards.Card{}},
+					{CardStack: []cards.Card{}},
+					{CardStack: []cards.Card{}},
+					{CardStack: []cards.Card{}},
+					{CardStack: []cards.Card{}},
+					{CardStack: []cards.Card{}},
+				},
+			},
+			want: false,
+		},
+		{
+			name: "filled one home",
+			fields: fields{
+				Homes: map[uint8]cells.HomeCell{
+					suits[0]: {[]cards.Card{{Code: uint8(1)}, {Code: uint8(2)}, {Code: uint8(3)}, {Code: uint8(4)}, {Code: uint8(5)}, {Code: uint8(6)}, {Code: uint8(7)}, {Code: uint8(8)}, {Code: uint8(9)}, {Code: uint8(10)}, {Code: uint8(11)}, {Code: uint8(12)}, {Code: uint8(13)}}, uint8(0)},
+					suits[1]: {[]cards.Card{}, uint8(1)},
+					suits[2]: {[]cards.Card{}, uint8(2)},
+					suits[3]: {[]cards.Card{}, uint8(3)},
+				},
+				Frees: [consts.LenFre]cells.FreeCell{
+					{CardStack: []cards.Card{}},
+					{CardStack: []cards.Card{}},
+					{CardStack: []cards.Card{}},
+					{CardStack: []cards.Card{}},
+				},
+				Fields: [consts.LenFie]cells.FieldCell{
+					{CardStack: []cards.Card{}},
+					{CardStack: []cards.Card{}},
+					{CardStack: []cards.Card{}},
+					{CardStack: []cards.Card{}},
+					{CardStack: []cards.Card{}},
+					{CardStack: []cards.Card{}},
+					{CardStack: []cards.Card{}},
+					{CardStack: []cards.Card{}},
+				},
+			},
+			want: false,
+		},
+		{
+			name: "filled all home",
+			fields: fields{
+				Homes: map[uint8]cells.HomeCell{
+					suits[0]: {[]cards.Card{{Code: uint8(1)}, {Code: uint8(2)}, {Code: uint8(3)}, {Code: uint8(4)}, {Code: uint8(5)}, {Code: uint8(6)}, {Code: uint8(7)}, {Code: uint8(8)}, {Code: uint8(9)}, {Code: uint8(10)}, {Code: uint8(11)}, {Code: uint8(12)}, {Code: uint8(13)}}, uint8(0)},
+					suits[1]: {[]cards.Card{{Code: uint8(17)}, {Code: uint8(18)}, {Code: uint8(19)}, {Code: uint8(20)}, {Code: uint8(21)}, {Code: uint8(22)}, {Code: uint8(23)}, {Code: uint8(24)}, {Code: uint8(25)}, {Code: uint8(26)}, {Code: uint8(27)}, {Code: uint8(28)}, {Code: uint8(29)}}, uint8(1)},
+					suits[2]: {[]cards.Card{{Code: uint8(33)}, {Code: uint8(34)}, {Code: uint8(35)}, {Code: uint8(36)}, {Code: uint8(37)}, {Code: uint8(38)}, {Code: uint8(39)}, {Code: uint8(40)}, {Code: uint8(41)}, {Code: uint8(42)}, {Code: uint8(43)}, {Code: uint8(44)}, {Code: uint8(45)}}, uint8(2)},
+					suits[3]: {[]cards.Card{{Code: uint8(49)}, {Code: uint8(50)}, {Code: uint8(51)}, {Code: uint8(52)}, {Code: uint8(53)}, {Code: uint8(54)}, {Code: uint8(55)}, {Code: uint8(56)}, {Code: uint8(57)}, {Code: uint8(58)}, {Code: uint8(59)}, {Code: uint8(60)}, {Code: uint8(61)}}, uint8(3)},
+				},
+				Frees: [consts.LenFre]cells.FreeCell{
+					{CardStack: []cards.Card{}},
+					{CardStack: []cards.Card{}},
+					{CardStack: []cards.Card{}},
+					{CardStack: []cards.Card{}},
+				},
+				Fields: [consts.LenFie]cells.FieldCell{
+					{CardStack: []cards.Card{}},
+					{CardStack: []cards.Card{}},
+					{CardStack: []cards.Card{}},
+					{CardStack: []cards.Card{}},
+					{CardStack: []cards.Card{}},
+					{CardStack: []cards.Card{}},
+					{CardStack: []cards.Card{}},
+					{CardStack: []cards.Card{}},
+				},
+			},
+			want: true,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			gf := GameField{
+				Homes:  tt.fields.Homes,
+				Frees:  tt.fields.Frees,
+				Fields: tt.fields.Fields,
+			}
+			if got := gf.IsFinished(); got != tt.want {
+				t.Errorf("IsFinished() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
 func Test_calcFieldHash(t *testing.T) {
 	type args struct {
 		fields [consts.LenFie]cells.FieldCell

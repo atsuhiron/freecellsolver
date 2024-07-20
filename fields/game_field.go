@@ -27,6 +27,15 @@ func (gf GameField) CalcHashCode() [consts.LenHash]uint64 {
 	return hashCodes
 }
 
+func (gf GameField) IsFinished() bool {
+	for _, sc := range suits {
+		if len(gf.Homes[sc].CardStack) < 13 {
+			return false
+		}
+	}
+	return true
+}
+
 func calcHomeHash(homes map[uint8]cells.HomeCell) uint64 {
 	// TODO: ポインタにする
 	homeCode := uint64(0)
