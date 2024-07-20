@@ -19,7 +19,40 @@ func TestGameField_CalcHashCode(t *testing.T) {
 		fields fields
 		want   [consts.LenHash]uint64
 	}{
-		// TODO: Add test cases.
+		{
+			name: "complex",
+			fields: fields{
+				Homes: map[uint8]cells.HomeCell{
+					suits[0]: {CardStack: []cards.Card{{Code: uint8(1)}}},
+					suits[1]: {},
+					suits[2]: {CardStack: []cards.Card{{Code: uint8(33)}, {Code: uint8(34)}}},
+					suits[3]: {},
+				},
+				Frees: [consts.LenFre]cells.FreeCell{
+					{CardStack: []cards.Card{{Code: uint8(34)}}},
+					{CardStack: []cards.Card{}},
+					{CardStack: []cards.Card{{Code: uint8(18)}}},
+					{CardStack: []cards.Card{}},
+				},
+				Fields: [consts.LenFie]cells.FieldCell{
+					{CardStack: []cards.Card{}},
+					{CardStack: []cards.Card{{Code: uint8(35)}, {Code: uint8(18)}}},
+					{CardStack: []cards.Card{}},
+					{CardStack: []cards.Card{{Code: uint8(7)}, {Code: uint8(22)}}},
+					{CardStack: []cards.Card{}},
+					{CardStack: []cards.Card{}},
+					{CardStack: []cards.Card{}},
+					{CardStack: []cards.Card{}},
+				},
+			},
+			want: [consts.LenHash]uint64{
+				9570153503134242, // 0x0022000100001222  (2228225 << 32 + 4642)
+				1827, 5650, 0, 0, 0,
+				0, 0, 0, 0, 0,
+				0, 0, 0, 0, 0,
+				0, 0, 0, 0,
+			},
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
