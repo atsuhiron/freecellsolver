@@ -203,6 +203,27 @@ func Test_calcFieldHash(t *testing.T) {
 				0, 0, 0, 0,
 			},
 		},
+		{
+			name: "multi card, one field (long sequence)",
+			args: args{
+				fields: [consts.LenFie]cells.FieldCell{
+					{CardStack: []cards.Card{}},
+					{CardStack: []cards.Card{{Code: uint8(13)}, {Code: uint8(28)}, {Code: uint8(11)}, {Code: uint8(26)}, {Code: uint8(9)}, {Code: uint8(24)}, {Code: uint8(7)}, {Code: uint8(22)}, {Code: uint8(5)}, {Code: uint8(20)}, {Code: uint8(3)}, {Code: uint8(18)}, {Code: uint8(1)}}},
+					{CardStack: []cards.Card{}},
+					{CardStack: []cards.Card{}},
+					{CardStack: []cards.Card{}},
+					{CardStack: []cards.Card{}},
+					{CardStack: []cards.Card{}},
+					{CardStack: []cards.Card{}},
+				},
+			},
+			want: [consts.MaxFieNum]uint64{
+				13, 28, 11, 26, 9,
+				24, 7, 22, 5, 20,
+				3, 18, 1, 0, 0,
+				0, 0, 0, 0,
+			},
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -408,7 +429,19 @@ func Test_indexValue64_Len(t *testing.T) {
 		iv   indexValue64
 		want int
 	}{
-		// TODO: Add test cases.
+		{
+			name: "empty",
+			iv:   indexValue64{},
+			want: 0,
+		},
+		{
+			name: "filled",
+			iv: indexValue64{
+				{uint64(1), uint64(35)},
+				{uint64(2), uint64(38)},
+			},
+			want: 2,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -430,7 +463,15 @@ func Test_indexValue64_Less(t *testing.T) {
 		args args
 		want bool
 	}{
-		// TODO: Add test cases.
+		{
+			name: "1",
+			iv: indexValue64{
+				{uint64(1), uint64(35)},
+				{uint64(2), uint64(38)},
+			},
+			args: args{0, 1},
+			want: false,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -450,12 +491,27 @@ func Test_indexValue64_Swap(t *testing.T) {
 		name string
 		iv   indexValue64
 		args args
+		want indexValue64
 	}{
-		// TODO: Add test cases.
+		{
+			name: "1",
+			iv: indexValue64{
+				{uint64(1), uint64(35)},
+				{uint64(2), uint64(38)},
+			},
+			args: args{0, 1},
+			want: indexValue64{
+				{uint64(2), uint64(38)},
+				{uint64(1), uint64(35)},
+			},
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			tt.iv.Swap(tt.args.i, tt.args.j)
+			if !reflect.DeepEqual(tt.iv, tt.want) {
+				t.Errorf("Swap() = %v, want %v", tt.iv, tt.want)
+			}
 		})
 	}
 }
