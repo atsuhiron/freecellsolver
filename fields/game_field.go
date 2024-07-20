@@ -68,6 +68,8 @@ func calcFieldHash(fields [consts.LenFie]cells.FieldCell) [consts.MaxFieNum]uint
 		if len(cell.CardStack) == 0 {
 			fieldCardCodes[i][1] = uint64(0)
 		} else {
+			// As long as the patterns are the same field,
+			// the order does not matter, so only the first card is checked.
 			fieldCardCodes[i][1] = uint64(cell.CardStack[0].Code)
 		}
 	}
@@ -75,15 +77,15 @@ func calcFieldHash(fields [consts.LenFie]cells.FieldCell) [consts.MaxFieNum]uint
 
 	sortedField := [consts.LenFie][]cards.Card{}
 	for i, ivp := range fieldCardCodes {
-		sortedField[i] = fields[ivp[1]].CardStack
+		sortedField[i] = fields[ivp[0]].CardStack
 	}
 
 	fieldCodes := [consts.MaxFieNum]uint64{}
-	for j, _ := range fieldCodes {
+	for j := range fieldCodes {
 		fieldCode := uint64(0)
 		for i, column := range sortedField {
 			if len(column) > j {
-				fieldCode += uint64(column[i].Code) << (8 * i)
+				fieldCode += uint64(column[j].Code) << (8 * i)
 			}
 		}
 		fieldCodes[j] = fieldCode
@@ -94,6 +96,10 @@ func calcFieldHash(fields [consts.LenFie]cells.FieldCell) [consts.MaxFieNum]uint
 
 type indexValue64 [][2]uint64
 
-func (iv indexValue64) Len() int           { return len(iv) }
-func (iv indexValue64) Swap(i, j int)      { iv[i], iv[j] = iv[j], iv[i] }
-func (iv indexValue64) Less(i, j int) bool { return iv[i][1] < iv[j][1] }
+func (iv indexValue64) Len() int      { return len(iv) }
+func (iv indexValue64) Swap(i, j int) { iv[i], iv[j] = iv[j], iv[i] }
+func (iv indexValue64) Less(i, j int) bool {
+	// To implement it as its name(Less) suggests, the slice need to be reverse.
+	// To avoid this step, the inequality signs are reversed (`<` -> `<`).
+	return iv[i][1] > iv[j][1]
+}

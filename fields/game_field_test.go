@@ -44,7 +44,165 @@ func Test_calcFieldHash(t *testing.T) {
 		args args
 		want [consts.MaxFieNum]uint64
 	}{
-		// TODO: Add test cases.
+		{
+			name: "empty (nil)",
+			args: args{
+				fields: [consts.LenFie]cells.FieldCell{},
+			},
+			want: [consts.MaxFieNum]uint64{
+				0, 0, 0, 0, 0,
+				0, 0, 0, 0, 0,
+				0, 0, 0, 0, 0,
+				0, 0, 0, 0,
+			},
+		},
+		{
+			name: "empty (defined)",
+			args: args{
+				fields: [consts.LenFie]cells.FieldCell{
+					{CardStack: []cards.Card{}},
+					{CardStack: []cards.Card{}},
+					{CardStack: []cards.Card{}},
+					{CardStack: []cards.Card{}},
+					{CardStack: []cards.Card{}},
+					{CardStack: []cards.Card{}},
+					{CardStack: []cards.Card{}},
+					{CardStack: []cards.Card{}},
+				},
+			},
+			want: [consts.MaxFieNum]uint64{
+				0, 0, 0, 0, 0,
+				0, 0, 0, 0, 0,
+				0, 0, 0, 0, 0,
+				0, 0, 0, 0,
+			},
+		},
+		{
+			name: "one card",
+			args: args{
+				fields: [consts.LenFie]cells.FieldCell{
+					{CardStack: []cards.Card{{Code: uint8(7)}}},
+					{CardStack: []cards.Card{}},
+					{CardStack: []cards.Card{}},
+					{CardStack: []cards.Card{}},
+					{CardStack: []cards.Card{}},
+					{CardStack: []cards.Card{}},
+					{CardStack: []cards.Card{}},
+					{CardStack: []cards.Card{}},
+				},
+			},
+			want: [consts.MaxFieNum]uint64{
+				7, 0, 0, 0, 0,
+				0, 0, 0, 0, 0,
+				0, 0, 0, 0, 0,
+				0, 0, 0, 0,
+			},
+		},
+		{
+			name: "one card (another order)",
+			args: args{
+				fields: [consts.LenFie]cells.FieldCell{
+					{CardStack: []cards.Card{}},
+					{CardStack: []cards.Card{}},
+					{CardStack: []cards.Card{}},
+					{CardStack: []cards.Card{{Code: uint8(7)}}},
+					{CardStack: []cards.Card{}},
+					{CardStack: []cards.Card{}},
+					{CardStack: []cards.Card{}},
+					{CardStack: []cards.Card{}},
+				},
+			},
+			want: [consts.MaxFieNum]uint64{
+				7, 0, 0, 0, 0,
+				0, 0, 0, 0, 0,
+				0, 0, 0, 0, 0,
+				0, 0, 0, 0,
+			},
+		},
+		{
+			name: "multi card, one field",
+			args: args{
+				fields: [consts.LenFie]cells.FieldCell{
+					{CardStack: []cards.Card{{Code: uint8(7)}, {Code: uint8(22)}}},
+					{CardStack: []cards.Card{}},
+					{CardStack: []cards.Card{}},
+					{CardStack: []cards.Card{}},
+					{CardStack: []cards.Card{}},
+					{CardStack: []cards.Card{}},
+					{CardStack: []cards.Card{}},
+					{CardStack: []cards.Card{}},
+				},
+			},
+			want: [consts.MaxFieNum]uint64{
+				7, 22, 0, 0, 0,
+				0, 0, 0, 0, 0,
+				0, 0, 0, 0, 0,
+				0, 0, 0, 0,
+			},
+		},
+		{
+			name: "multi card, one field (another order)",
+			args: args{
+				fields: [consts.LenFie]cells.FieldCell{
+					{CardStack: []cards.Card{}},
+					{CardStack: []cards.Card{}},
+					{CardStack: []cards.Card{}},
+					{CardStack: []cards.Card{{Code: uint8(7)}, {Code: uint8(22)}}},
+					{CardStack: []cards.Card{}},
+					{CardStack: []cards.Card{}},
+					{CardStack: []cards.Card{}},
+					{CardStack: []cards.Card{}},
+				},
+			},
+			want: [consts.MaxFieNum]uint64{
+				7, 22, 0, 0, 0,
+				0, 0, 0, 0, 0,
+				0, 0, 0, 0, 0,
+				0, 0, 0, 0,
+			},
+		},
+		{
+			name: "multi card, multi field",
+			args: args{
+				fields: [consts.LenFie]cells.FieldCell{
+					{CardStack: []cards.Card{{Code: uint8(7)}, {Code: uint8(22)}}},
+					{CardStack: []cards.Card{{Code: uint8(35)}, {Code: uint8(18)}}},
+					{CardStack: []cards.Card{}},
+					{CardStack: []cards.Card{}},
+					{CardStack: []cards.Card{}},
+					{CardStack: []cards.Card{}},
+					{CardStack: []cards.Card{}},
+					{CardStack: []cards.Card{}},
+				},
+			},
+			want: [consts.MaxFieNum]uint64{
+				1827, 5650, 0, 0, 0,
+				0, 0, 0, 0, 0,
+				0, 0, 0, 0, 0,
+				0, 0, 0, 0,
+			},
+		},
+		{
+			name: "multi card, multi field (another order)",
+			args: args{
+				fields: [consts.LenFie]cells.FieldCell{
+					{CardStack: []cards.Card{}},
+					{CardStack: []cards.Card{{Code: uint8(35)}, {Code: uint8(18)}}},
+					{CardStack: []cards.Card{}},
+					{CardStack: []cards.Card{{Code: uint8(7)}, {Code: uint8(22)}}},
+					{CardStack: []cards.Card{}},
+					{CardStack: []cards.Card{}},
+					{CardStack: []cards.Card{}},
+					{CardStack: []cards.Card{}},
+				},
+			},
+			want: [consts.MaxFieNum]uint64{
+				1827, 5650, 0, 0, 0,
+				0, 0, 0, 0, 0,
+				0, 0, 0, 0, 0,
+				0, 0, 0, 0,
+			},
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
