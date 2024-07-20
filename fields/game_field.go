@@ -51,6 +51,7 @@ func calcFreeHash(frees [consts.LenFre]cells.FreeCell) uint64 {
 		}
 	}
 	slices.Sort(freeCardCodes)
+	slices.Reverse(freeCardCodes)
 	freeCode := uint64(0)
 	for i, cardCode := range freeCardCodes {
 		freeCode += cardCode << (8 * i)

@@ -64,7 +64,73 @@ func Test_calcFreeHash(t *testing.T) {
 		args args
 		want uint64
 	}{
-		// TODO: Add test cases.
+		{
+			name: "empty (nil)",
+			args: args{
+				frees: [consts.LenFre]cells.FreeCell{},
+			},
+			want: uint64(0),
+		},
+		{
+			name: "empty (defined)",
+			args: args{
+				frees: [consts.LenFre]cells.FreeCell{
+					{CardStack: []cards.Card{}},
+					{CardStack: []cards.Card{}},
+					{CardStack: []cards.Card{}},
+					{CardStack: []cards.Card{}},
+				},
+			},
+			want: uint64(0),
+		},
+		{
+			name: "one card 1",
+			args: args{
+				frees: [consts.LenFre]cells.FreeCell{
+					{CardStack: []cards.Card{{Code: uint8(5)}}},
+					{CardStack: []cards.Card{}},
+					{CardStack: []cards.Card{}},
+					{CardStack: []cards.Card{}},
+				},
+			},
+			want: uint64(5),
+		},
+		{
+			name: "one card 1 (another order)",
+			args: args{
+				frees: [consts.LenFre]cells.FreeCell{
+					{CardStack: []cards.Card{}},
+					{CardStack: []cards.Card{}},
+					{CardStack: []cards.Card{{Code: uint8(5)}}},
+					{CardStack: []cards.Card{}},
+				},
+			},
+			want: uint64(5),
+		},
+		{
+			name: "multi cards",
+			args: args{
+				frees: [consts.LenFre]cells.FreeCell{
+					{CardStack: []cards.Card{{Code: uint8(34)}}},
+					{CardStack: []cards.Card{}},
+					{CardStack: []cards.Card{{Code: uint8(18)}}},
+					{CardStack: []cards.Card{}},
+				},
+			},
+			want: uint64(4642), // 0x00001222
+		},
+		{
+			name: "multi cards (another order)",
+			args: args{
+				frees: [consts.LenFre]cells.FreeCell{
+					{CardStack: []cards.Card{{Code: uint8(18)}}},
+					{CardStack: []cards.Card{{Code: uint8(34)}}},
+					{CardStack: []cards.Card{}},
+					{CardStack: []cards.Card{}},
+				},
+			},
+			want: uint64(4642), // 0x00001222
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -85,13 +151,25 @@ func Test_calcHomeHash(t *testing.T) {
 		want uint64
 	}{
 		{
-			name: "empty",
+			name: "empty (nil)",
 			args: args{
 				homes: map[uint8]cells.HomeCell{
 					suits[0]: {},
 					suits[1]: {},
 					suits[2]: {},
 					suits[3]: {},
+				},
+			},
+			want: uint64(0),
+		},
+		{
+			name: "empty (defined)",
+			args: args{
+				homes: map[uint8]cells.HomeCell{
+					suits[0]: {[]cards.Card{}, uint8(0)},
+					suits[1]: {[]cards.Card{}, uint8(1)},
+					suits[2]: {[]cards.Card{}, uint8(2)},
+					suits[3]: {[]cards.Card{}, uint8(3)},
 				},
 			},
 			want: uint64(0),
@@ -145,7 +223,7 @@ func Test_calcHomeHash(t *testing.T) {
 			want: uint64(822083584), // 0x31000000
 		},
 		{
-			name: "multi card",
+			name: "multi cards",
 			args: args{
 				homes: map[uint8]cells.HomeCell{
 					suits[0]: {CardStack: []cards.Card{{Code: uint8(1)}}},
