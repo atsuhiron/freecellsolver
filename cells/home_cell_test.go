@@ -124,3 +124,58 @@ func TestHomeCell_GetEndSeq(t *testing.T) {
 		})
 	}
 }
+
+func TestHomeCell_Clone(t *testing.T) {
+	type fields struct {
+		CardStack []cards.Card
+		SuitCode  uint8
+	}
+	tests := []struct {
+		name   string
+		fields fields
+		want   HomeCell
+	}{
+		{
+			name: "empty stack",
+			fields: fields{
+				CardStack: []cards.Card{},
+				SuitCode:  uint8(0),
+			},
+			want: HomeCell{
+				CardStack: []cards.Card{},
+				SuitCode:  uint8(0),
+			},
+		},
+		{
+			name: "single stack",
+			fields: fields{
+				CardStack: []cards.Card{{uint8(1)}},
+				SuitCode:  uint8(0),
+			},
+			want: HomeCell{
+				CardStack: []cards.Card{{uint8(1)}},
+				SuitCode:  uint8(0),
+			},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			hCell := HomeCell{
+				CardStack: tt.fields.CardStack,
+				SuitCode:  tt.fields.SuitCode,
+			}
+			got := hCell.Clone()
+			if !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("Clone() = %v, want %v", got, tt.want)
+			}
+			if &got.CardStack == &tt.fields.CardStack {
+				t.Errorf("Cloned cell has same pointer")
+			}
+			if len(got.CardStack) > 0 {
+				if &(got.CardStack[0]) == &(tt.fields.CardStack[0]) {
+					t.Errorf("Cloned card has same pointer")
+				}
+			}
+		})
+	}
+}

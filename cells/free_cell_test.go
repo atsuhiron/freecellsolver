@@ -75,3 +75,52 @@ func TestFreeCell_GetEndSeq(t *testing.T) {
 		})
 	}
 }
+
+func TestFreeCell_Clone(t *testing.T) {
+	type fields struct {
+		CardStack []cards.Card
+	}
+	tests := []struct {
+		name   string
+		fields fields
+		want   FreeCell
+	}{
+		{
+			name: "empty stack",
+			fields: fields{
+				CardStack: []cards.Card{},
+			},
+			want: FreeCell{
+				CardStack: []cards.Card{},
+			},
+		},
+		{
+			name: "single stack",
+			fields: fields{
+				CardStack: []cards.Card{{uint8(1)}},
+			},
+			want: FreeCell{
+				CardStack: []cards.Card{{uint8(1)}},
+			},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			fCell := FreeCell{
+				CardStack: tt.fields.CardStack,
+			}
+			got := fCell.Clone()
+			if !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("Clone() = %v, want %v", got, tt.want)
+			}
+			if &got.CardStack == &tt.fields.CardStack {
+				t.Errorf("Cloned cell has same pointer")
+			}
+			if len(got.CardStack) > 0 {
+				if &(got.CardStack[0]) == &(tt.fields.CardStack[0]) {
+					t.Errorf("Cloned card has same pointer")
+				}
+			}
+		})
+	}
+}

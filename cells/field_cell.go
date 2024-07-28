@@ -51,3 +51,9 @@ func (fCell FieldCell) GetEndSeq() []cards.Card {
 	slices.Reverse(seq)
 	return seq
 }
+
+func (fCell FieldCell) Clone() FieldCell {
+	cloneStack := make([]cards.Card, len(fCell.CardStack))
+	copy(cloneStack, fCell.CardStack)
+	return FieldCell{cloneStack}
+}

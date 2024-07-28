@@ -19,3 +19,9 @@ func (fCell FreeCell) GetEndSeq() []cards.Card {
 	}
 	return slices.Clone(fCell.CardStack)
 }
+
+func (fCell FreeCell) Clone() FreeCell {
+	cloneStack := make([]cards.Card, len(fCell.CardStack))
+	copy(cloneStack, fCell.CardStack)
+	return FreeCell{cloneStack}
+}

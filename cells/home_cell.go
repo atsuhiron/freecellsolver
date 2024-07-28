@@ -22,3 +22,9 @@ func (hCell HomeCell) CanPlace(card cards.Card) bool {
 func (hCell HomeCell) GetEndSeq() []cards.Card {
 	return make([]cards.Card, 0)
 }
+
+func (hCell HomeCell) Clone() HomeCell {
+	cloneStack := make([]cards.Card, len(hCell.CardStack))
+	copy(cloneStack, hCell.CardStack)
+	return HomeCell{cloneStack, hCell.SuitCode}
+}
