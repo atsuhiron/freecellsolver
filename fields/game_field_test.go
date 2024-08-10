@@ -658,3 +658,55 @@ func Test_indexValue64_Swap(t *testing.T) {
 		})
 	}
 }
+
+func Test_calcMaxMovableCardNum(t *testing.T) {
+	type args struct {
+		free  int
+		field int
+	}
+	tests := []struct {
+		name string
+		args args
+		want int
+	}{
+		{
+			name: "0, 0",
+			args: args{
+				free:  0,
+				field: 0,
+			},
+			want: 1,
+		},
+		{
+			name: "0, 1",
+			args: args{
+				free:  0,
+				field: 1,
+			},
+			want: 2,
+		},
+		{
+			name: "1, 0",
+			args: args{
+				free:  1,
+				field: 0,
+			},
+			want: 2,
+		},
+		{
+			name: "2, 3",
+			args: args{
+				free:  2,
+				field: 3,
+			},
+			want: 12,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := calcMaxMovableCardNum(tt.args.free, tt.args.field); got != tt.want {
+				t.Errorf("calcMaxMovableCardNum() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}

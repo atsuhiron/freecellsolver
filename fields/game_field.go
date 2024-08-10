@@ -36,6 +36,40 @@ func (gf GameField) IsFinished() bool {
 	return true
 }
 
+func (gf GameField) getBranch() []GameField {
+
+	emptyFieldMum := 0
+	for i := 0; i < consts.LenFie; i++ {
+		if len(gf.Fields[i].CardStack) == 0 {
+			emptyFieldMum++
+		}
+	}
+
+	branch := make([]GameField, 0, consts.LenFre+consts.LenFie)
+	for iSrc := 0; iSrc < consts.LenFie; iSrc++ {
+		seq := gf.Fields[iSrc].GetEndSeq()
+		if len(seq) == 0 {
+			continue
+		}
+
+		for iTgt := 0; iTgt < consts.LenFie; iTgt++ {
+			if iTgt == iSrc {
+				// Move to self
+				continue
+			}
+
+			if gf.Fields[iTgt].CanPlace(seq[0]) {
+				branch = append(branch)
+			}
+		}
+	}
+	return branch // TODO: Implement
+}
+
+func calcMaxMovableCardNum(free int, field int) int {
+	return (field + 1) * (free + 1)
+}
+
 func calcHomeHash(homes map[uint8]cells.HomeCell) uint64 {
 	// TODO: ポインタにする
 	homeCode := uint64(0)
