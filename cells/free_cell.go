@@ -1,6 +1,7 @@
 package cells
 
 import (
+	"fmt"
 	"github.com/freecellsolver/cards"
 	"slices"
 )
@@ -18,6 +19,14 @@ func (fCell FreeCell) GetEndSeq() []cards.Card {
 		return make([]cards.Card, 0)
 	}
 	return slices.Clone(fCell.CardStack)
+}
+
+func (fCell FreeCell) RemoveEndSeq(removeNum int) error {
+	if len(fCell.CardStack) < removeNum {
+		return fmt.Errorf("removeNum (%v) must be equal or samller than CardStack size (%v)", removeNum, len(fCell.CardStack))
+	}
+	fCell.CardStack = fCell.CardStack[:len(fCell.CardStack)-removeNum]
+	return nil
 }
 
 func (fCell FreeCell) Clone() FreeCell {

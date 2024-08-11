@@ -179,3 +179,63 @@ func TestHomeCell_Clone(t *testing.T) {
 		})
 	}
 }
+
+func TestHomeCell_RemoveEndSeq(t *testing.T) {
+	type fields struct {
+		CardStack []cards.Card
+		SuitCode  uint8
+	}
+	type args struct {
+		removeNum int
+	}
+	tests := []struct {
+		name    string
+		fields  fields
+		args    args
+		wantErr bool
+	}{
+		{
+			name: "empty: move 0 OK",
+			fields: fields{
+				CardStack: []cards.Card{},
+			},
+			args:    args{removeNum: 0},
+			wantErr: false,
+		},
+		{
+			name: "empty: move 1 error",
+			fields: fields{
+				CardStack: []cards.Card{},
+			},
+			args:    args{removeNum: 1},
+			wantErr: true,
+		},
+		{
+			name: "filled: move 0 OK",
+			fields: fields{
+				CardStack: []cards.Card{{Code: uint8(1)}},
+			},
+			args:    args{removeNum: 0},
+			wantErr: false,
+		},
+		{
+			name: "filled: move 1 OK",
+			fields: fields{
+				CardStack: []cards.Card{{Code: uint8(1)}},
+			},
+			args:    args{removeNum: 1},
+			wantErr: false,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			hCell := HomeCell{
+				CardStack: tt.fields.CardStack,
+				SuitCode:  tt.fields.SuitCode,
+			}
+			if err := hCell.RemoveEndSeq(tt.args.removeNum); (err != nil) != tt.wantErr {
+				t.Errorf("RemoveEndSeq() error = %v, wantErr %v", err, tt.wantErr)
+			}
+		})
+	}
+}

@@ -1,6 +1,7 @@
 package cells
 
 import (
+	"fmt"
 	"github.com/freecellsolver/cards"
 )
 
@@ -21,6 +22,14 @@ func (hCell HomeCell) CanPlace(card cards.Card) bool {
 
 func (hCell HomeCell) GetEndSeq() []cards.Card {
 	return make([]cards.Card, 0)
+}
+
+func (hCell HomeCell) RemoveEndSeq(removeNum int) error {
+	if len(hCell.CardStack) < removeNum {
+		return fmt.Errorf("removeNum (%v) must be equal or samller than CardStack size (%v)", removeNum, len(hCell.CardStack))
+	}
+	hCell.CardStack = hCell.CardStack[:len(hCell.CardStack)-removeNum]
+	return nil
 }
 
 func (hCell HomeCell) Clone() HomeCell {

@@ -1,11 +1,13 @@
 package fields
 
 import (
+	"fmt"
 	"github.com/freecellsolver/cards"
 	"github.com/freecellsolver/cells"
 	"github.com/freecellsolver/consts"
 	"slices"
 	"sort"
+	"strings"
 )
 
 type GameField struct {
@@ -36,8 +38,7 @@ func (gf GameField) IsFinished() bool {
 	return true
 }
 
-func (gf GameField) getBranch() []GameField {
-
+func (gf GameField) GetBranch() []GameFieldBranch {
 	emptyFieldMum := 0
 	for i := 0; i < consts.LenFie; i++ {
 		if len(gf.Fields[i].CardStack) == 0 {
@@ -45,7 +46,7 @@ func (gf GameField) getBranch() []GameField {
 		}
 	}
 
-	branch := make([]GameField, 0, consts.LenFre+consts.LenFie)
+	branch := make([]GameFieldBranch, 0, consts.LenFre+consts.LenFie)
 	for iSrc := 0; iSrc < consts.LenFie; iSrc++ {
 		seq := gf.Fields[iSrc].GetEndSeq()
 		if len(seq) == 0 {
@@ -59,6 +60,7 @@ func (gf GameField) getBranch() []GameField {
 			}
 
 			if gf.Fields[iTgt].CanPlace(seq[0]) {
+				// TODO: make branch!
 				branch = append(branch)
 			}
 		}
@@ -135,6 +137,40 @@ func calcFieldHash(fields [consts.LenFie]cells.FieldCell) [consts.MaxFieNum]uint
 	}
 
 	return fieldCodes
+}
+
+func (gf GameField) clone() GameField {
+	homes := make(map[uint8]cells.HomeCell)
+	for suit, cell := range gf.Homes {
+		homes[suit] = cell.Clone()
+	}
+
+	frees := [consts.LenFre]cells.FreeCell{}
+	for i, _ := range gf.Frees {
+		frees[i] = gf.Frees[i].Clone()
+	}
+
+	fields := [consts.LenFie]cells.FieldCell{}
+	for i, _ := range gf.Fields {
+		fields[i] = gf.Fields[i].Clone()
+	}
+
+	return GameField{
+		Homes:  homes,
+		Frees:  frees,
+		Fields: fields,
+	}
+}
+
+func (gf GameField) move(fieldTypeFrom string, indexFrom int, fieldTypeTo string, indexTo int) error {
+	if !strings.EqualFold(fieldTypeFrom, "home") || !strings.EqualFold(fieldTypeFrom, "free") || !strings.EqualFold(fieldTypeFrom, "field") {
+		return fmt.Errorf("invalid fieldTypeFrom %v", fieldTypeFrom)
+	}
+	if !strings.EqualFold(fieldTypeTo, "home") || !strings.EqualFold(fieldTypeTo, "free") || !strings.EqualFold(fieldTypeTo, "field") {
+		return fmt.Errorf("invalid fieldTypeTo %v", fieldTypeTo)
+	}
+	// TODO: implement
+	return nil
 }
 
 type indexValue64 [][2]uint64
