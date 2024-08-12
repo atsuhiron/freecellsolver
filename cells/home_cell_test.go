@@ -1,6 +1,7 @@
 package cells
 
 import (
+	"fmt"
 	"github.com/freecellsolver/cards"
 	"reflect"
 	"testing"
@@ -238,4 +239,59 @@ func TestHomeCell_RemoveEndSeq(t *testing.T) {
 			}
 		})
 	}
+}
+
+func TestHomeCell_Place(t *testing.T) {
+	type fields struct {
+		CardStack []cards.Card
+		SuitCode  uint8
+	}
+	type args struct {
+		seq []cards.Card
+	}
+	tests := []struct {
+		name   string
+		fields fields
+		args   args
+		want   []cards.Card
+	}{
+		{
+			name: "empty: move 1 card",
+			fields: fields{
+				CardStack: []cards.Card{},
+			},
+			args: args{
+				seq: []cards.Card{{Code: uint8(1)}},
+			},
+			want: []cards.Card{{Code: uint8(1)}},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			hCell := HomeCell{
+				CardStack: tt.fields.CardStack,
+				SuitCode:  tt.fields.SuitCode,
+			}
+
+			fmt.Printf("%p\n", &(tt.fields.CardStack))
+			fmt.Printf("%p\n", &(hCell.CardStack))
+			hCell.Place(tt.args.seq)
+			fmt.Printf("%p\n", &(hCell.CardStack))
+			if !equalStack(&(hCell.CardStack), &(tt.want)) {
+				t.Errorf("Place() = %v, want %v", hCell.CardStack, tt.want)
+			}
+		})
+	}
+}
+
+func equalStack(stack1, stack2 *[]cards.Card) bool {
+	if len(*stack1) != len(*stack2) {
+		return false
+	}
+	for i := range *stack1 {
+		if (*stack1)[i].Code != (*stack2)[i].Code {
+			return false
+		}
+	}
+	return true
 }
