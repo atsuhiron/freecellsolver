@@ -27,7 +27,7 @@ type MyStack struct {
 	IntStack []int
 }
 
-func (stack MyStack) Place(seq []int) {
+func (stack *MyStack) Place(seq []int) {
 	stack.IntStack = append(stack.IntStack, seq...)
 }
 
