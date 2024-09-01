@@ -275,7 +275,7 @@ func TestHomeCell_Place(t *testing.T) {
 
 			fmt.Printf("%p\n", &(tt.fields.CardStack))
 			fmt.Printf("%p\n", &(hCell.CardStack))
-			hCell.Place(tt.args.seq)
+			hCell.Place(&(tt.args.seq))
 			fmt.Printf("%p\n", &(hCell.CardStack))
 			if !equalStack(&(hCell.CardStack), &(tt.want)) {
 				t.Errorf("Place() = %v, want %v", hCell.CardStack, tt.want)

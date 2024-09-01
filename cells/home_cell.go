@@ -10,7 +10,7 @@ type HomeCell struct {
 	SuitCode  uint8 // right shifted
 }
 
-func (hCell HomeCell) CanPlace(card cards.Card) bool {
+func (hCell *HomeCell) CanPlace(card cards.Card) bool {
 	if card.GetSuitCode() != hCell.SuitCode {
 		return false
 	}
@@ -20,11 +20,11 @@ func (hCell HomeCell) CanPlace(card cards.Card) bool {
 	return card.Code == hCell.CardStack[len(hCell.CardStack)-1].Code+1
 }
 
-func (hCell HomeCell) GetEndSeq() []cards.Card {
+func (hCell *HomeCell) GetEndSeq() []cards.Card {
 	return make([]cards.Card, 0)
 }
 
-func (hCell HomeCell) RemoveEndSeq(removeNum int) error {
+func (hCell *HomeCell) RemoveEndSeq(removeNum int) error {
 	if len(hCell.CardStack) < removeNum {
 		return fmt.Errorf("removeNum (%v) must be equal or samller than CardStack size (%v)", removeNum, len(hCell.CardStack))
 	}
@@ -32,15 +32,15 @@ func (hCell HomeCell) RemoveEndSeq(removeNum int) error {
 	return nil
 }
 
-func (hCell HomeCell) Place(seq []cards.Card) {
+func (hCell *HomeCell) Place(seq *[]cards.Card) {
 	p := &(hCell.CardStack)
 	fmt.Printf("%p\n", p)
-	hCell.CardStack = append(hCell.CardStack, seq...)
+	hCell.CardStack = append(hCell.CardStack, *seq...)
 	q := &(hCell.CardStack)
 	fmt.Printf("%p\n", q)
 }
 
-func (hCell HomeCell) Clone() HomeCell {
+func (hCell *HomeCell) Clone() HomeCell {
 	cloneStack := make([]cards.Card, len(hCell.CardStack))
 	copy(cloneStack, hCell.CardStack)
 	return HomeCell{cloneStack, hCell.SuitCode}

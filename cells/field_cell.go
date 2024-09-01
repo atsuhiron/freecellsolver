@@ -10,7 +10,7 @@ type FieldCell struct {
 	CardStack []cards.Card
 }
 
-func (fCell FieldCell) CanPlace(card cards.Card) bool {
+func (fCell *FieldCell) CanPlace(card cards.Card) bool {
 	if len(fCell.CardStack) == 0 {
 		return true
 	}
@@ -22,7 +22,7 @@ func (fCell FieldCell) CanPlace(card cards.Card) bool {
 	return card.GetNumCode() == fCell.CardStack[len(fCell.CardStack)-1].GetNumCode()-uint8(1)
 }
 
-func (fCell FieldCell) GetEndSeq() []cards.Card {
+func (fCell *FieldCell) GetEndSeq() []cards.Card {
 	if len(fCell.CardStack) == 0 {
 		return []cards.Card{}
 	}
@@ -53,7 +53,7 @@ func (fCell FieldCell) GetEndSeq() []cards.Card {
 	return seq
 }
 
-func (fCell FieldCell) RemoveEndSeq(removeNum int) error {
+func (fCell *FieldCell) RemoveEndSeq(removeNum int) error {
 	if len(fCell.CardStack) < removeNum {
 		return fmt.Errorf("removeNum (%v) must be equal or samller than CardStack size (%v)", removeNum, len(fCell.CardStack))
 	}
@@ -61,7 +61,7 @@ func (fCell FieldCell) RemoveEndSeq(removeNum int) error {
 	return nil
 }
 
-func (fCell FieldCell) Clone() FieldCell {
+func (fCell *FieldCell) Clone() FieldCell {
 	cloneStack := make([]cards.Card, len(fCell.CardStack))
 	copy(cloneStack, fCell.CardStack)
 	return FieldCell{cloneStack}
