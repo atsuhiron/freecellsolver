@@ -16,7 +16,7 @@ type GameField struct {
 	Fields [consts.LenFie]cells.FieldCell
 }
 
-func (gf GameField) CalcHashCode() [consts.LenHash]uint64 {
+func (gf *GameField) CalcHashCode() [consts.LenHash]uint64 {
 	homeCode := calcHomeHash(gf.Homes)
 	freeCode := calcFreeHash(gf.Frees)
 	fieldCodes := calcFieldHash(gf.Fields)
@@ -29,7 +29,7 @@ func (gf GameField) CalcHashCode() [consts.LenHash]uint64 {
 	return hashCodes
 }
 
-func (gf GameField) IsFinished() bool {
+func (gf *GameField) IsFinished() bool {
 	for _, sc := range suits {
 		if len(gf.Homes[sc].CardStack) < 13 {
 			return false
@@ -38,7 +38,7 @@ func (gf GameField) IsFinished() bool {
 	return true
 }
 
-func (gf GameField) GetBranch() []GameFieldBranch {
+func (gf *GameField) GetBranch() []GameFieldBranch {
 	emptyFieldMum := 0
 	for i := 0; i < consts.LenFie; i++ {
 		if len(gf.Fields[i].CardStack) == 0 {
@@ -139,7 +139,7 @@ func calcFieldHash(fields [consts.LenFie]cells.FieldCell) [consts.MaxFieNum]uint
 	return fieldCodes
 }
 
-func (gf GameField) clone() GameField {
+func (gf *GameField) clone() GameField {
 	homes := make(map[uint8]cells.HomeCell)
 	for suit, cell := range gf.Homes {
 		homes[suit] = cell.Clone()
@@ -162,7 +162,7 @@ func (gf GameField) clone() GameField {
 	}
 }
 
-func (gf GameField) move(fieldTypeFrom string, indexFrom int, fieldTypeTo string, indexTo int) error {
+func (gf *GameField) move(fieldTypeFrom string, indexFrom int, fieldTypeTo string, indexTo int) error {
 	if !strings.EqualFold(fieldTypeFrom, "home") || !strings.EqualFold(fieldTypeFrom, "free") || !strings.EqualFold(fieldTypeFrom, "field") {
 		return fmt.Errorf("invalid fieldTypeFrom %v", fieldTypeFrom)
 	}

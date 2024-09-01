@@ -11,7 +11,7 @@ type ReadableCard struct {
 	Num  string
 }
 
-func (rCard ReadableCard) ToCard() (Card, error) {
+func (rCard *ReadableCard) ToCard() (Card, error) {
 	suitCode := uint8(0)
 	switch rCard.Suit {
 	case "♠":

@@ -10,19 +10,19 @@ type Card struct {
 	Code uint8
 }
 
-func (card Card) GetSuitCode() uint8 {
+func (card *Card) GetSuitCode() uint8 {
 	return card.Code >> consts.SShift
 }
 
-func (card Card) GetNumCode() uint8 {
+func (card *Card) GetNumCode() uint8 {
 	return card.Code & 0x0f
 }
 
-func (card Card) IsBlack() bool {
+func (card *Card) IsBlack() bool {
 	return card.GetSuitCode()%2 == 0
 }
 
-func (card Card) ToReadableCard() (ReadableCard, error) {
+func (card *Card) ToReadableCard() (ReadableCard, error) {
 	suitCode := card.GetSuitCode()
 	suit := ""
 	switch suitCode {
