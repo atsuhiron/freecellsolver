@@ -1,7 +1,6 @@
 package cells
 
 import (
-	"fmt"
 	"github.com/freecellsolver/cards"
 	"reflect"
 	"testing"
@@ -247,7 +246,7 @@ func TestHomeCell_Place(t *testing.T) {
 		SuitCode  uint8
 	}
 	type args struct {
-		seq []cards.Card
+		seq *[]cards.Card
 	}
 	tests := []struct {
 		name   string
@@ -256,14 +255,37 @@ func TestHomeCell_Place(t *testing.T) {
 		want   []cards.Card
 	}{
 		{
-			name: "empty: move 1 card",
+			name: "empty: place empty stack",
 			fields: fields{
 				CardStack: []cards.Card{},
 			},
 			args: args{
-				seq: []cards.Card{{Code: uint8(1)}},
+				seq: &[]cards.Card{},
+			},
+			want: []cards.Card{},
+		},
+		{
+			name: "empty: place 1 card",
+			fields: fields{
+				CardStack: []cards.Card{},
+			},
+			args: args{
+				seq: &[]cards.Card{{Code: uint8(1)}},
 			},
 			want: []cards.Card{{Code: uint8(1)}},
+		},
+		{
+			name: "filled: place 1 card",
+			fields: fields{
+				CardStack: []cards.Card{{Code: uint8(1)}},
+			},
+			args: args{
+				seq: &[]cards.Card{{Code: uint8(2)}},
+			},
+			want: []cards.Card{
+				{Code: uint8(1)},
+				{Code: uint8(2)},
+			},
 		},
 	}
 	for _, tt := range tests {
@@ -273,25 +295,10 @@ func TestHomeCell_Place(t *testing.T) {
 				SuitCode:  tt.fields.SuitCode,
 			}
 
-			fmt.Printf("%p\n", &(tt.fields.CardStack))
-			fmt.Printf("%p\n", &(hCell.CardStack))
-			hCell.Place(&(tt.args.seq))
-			fmt.Printf("%p\n", &(hCell.CardStack))
-			if !equalStack(&(hCell.CardStack), &(tt.want)) {
+			hCell.Place(tt.args.seq)
+			if !EqualStack(&(hCell.CardStack), &(tt.want)) {
 				t.Errorf("Place() = %v, want %v", hCell.CardStack, tt.want)
 			}
 		})
 	}
-}
-
-func equalStack(stack1, stack2 *[]cards.Card) bool {
-	if len(*stack1) != len(*stack2) {
-		return false
-	}
-	for i := range *stack1 {
-		if (*stack1)[i].Code != (*stack2)[i].Code {
-			return false
-		}
-	}
-	return true
 }

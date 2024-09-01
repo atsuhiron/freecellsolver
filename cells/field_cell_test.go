@@ -243,3 +243,81 @@ func TestFieldCell_Clone(t *testing.T) {
 		})
 	}
 }
+
+func TestFieldCell_Place(t *testing.T) {
+	type fields struct {
+		CardStack []cards.Card
+	}
+	type args struct {
+		seq *[]cards.Card
+	}
+	tests := []struct {
+		name   string
+		fields fields
+		args   args
+		want   []cards.Card
+	}{
+		{
+			name: "empty: place empty stack",
+			fields: fields{
+				CardStack: []cards.Card{},
+			},
+			args: args{
+				seq: &[]cards.Card{},
+			},
+			want: []cards.Card{},
+		},
+		{
+			name: "empty: place 1 card",
+			fields: fields{
+				CardStack: []cards.Card{},
+			},
+			args: args{
+				seq: &[]cards.Card{{Code: uint8(1)}},
+			},
+			want: []cards.Card{{Code: uint8(1)}},
+		},
+		{
+			name: "filled: place 1 card",
+			fields: fields{
+				CardStack: []cards.Card{{uint8(5)}},
+			},
+			args: args{
+				seq: &[]cards.Card{{Code: uint8(20)}},
+			},
+			want: []cards.Card{
+				{Code: uint8(5)},
+				{Code: uint8(20)},
+			},
+		},
+		{
+			name: "filled: place multi cards",
+			fields: fields{
+				CardStack: []cards.Card{{uint8(5)}},
+			},
+			args: args{
+				seq: &[]cards.Card{
+					{Code: uint8(20)},
+					{Code: uint8(3)},
+				},
+			},
+			want: []cards.Card{
+				{Code: uint8(5)},
+				{Code: uint8(20)},
+				{Code: uint8(3)},
+			},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			fCell := &FieldCell{
+				CardStack: tt.fields.CardStack,
+			}
+
+			fCell.Place(tt.args.seq)
+			if !EqualStack(&(fCell.CardStack), &(tt.want)) {
+				t.Errorf("Place() = %v, want %v", fCell.CardStack, tt.want)
+			}
+		})
+	}
+}

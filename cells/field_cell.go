@@ -61,6 +61,10 @@ func (fCell *FieldCell) RemoveEndSeq(removeNum int) error {
 	return nil
 }
 
+func (fCell *FieldCell) Place(seq *[]cards.Card) {
+	fCell.CardStack = append(fCell.CardStack, *seq...)
+}
+
 func (fCell *FieldCell) Clone() FieldCell {
 	cloneStack := make([]cards.Card, len(fCell.CardStack))
 	copy(cloneStack, fCell.CardStack)

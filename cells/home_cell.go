@@ -33,11 +33,7 @@ func (hCell *HomeCell) RemoveEndSeq(removeNum int) error {
 }
 
 func (hCell *HomeCell) Place(seq *[]cards.Card) {
-	p := &(hCell.CardStack)
-	fmt.Printf("%p\n", p)
 	hCell.CardStack = append(hCell.CardStack, *seq...)
-	q := &(hCell.CardStack)
-	fmt.Printf("%p\n", q)
 }
 
 func (hCell *HomeCell) Clone() HomeCell {
