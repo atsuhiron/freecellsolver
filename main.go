@@ -50,5 +50,5 @@ func main() {
 	freeCells := make([]cells.FreeCell, 4)
 	freeCells = append(freeCells, cells.FreeCell{})
 
-	fmt.Printf("Can place card: %v", freeCells[0].CanPlace(cards.Card{37}))
+	fmt.Printf("Can place card: %v", freeCells[0].CanPlace(cards.Card{Code: 37}))
 }

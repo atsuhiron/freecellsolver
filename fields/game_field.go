@@ -146,12 +146,12 @@ func (gf GameField) clone() GameField {
 	}
 
 	frees := [consts.LenFre]cells.FreeCell{}
-	for i, _ := range gf.Frees {
+	for i := range gf.Frees {
 		frees[i] = gf.Frees[i].Clone()
 	}
 
 	fields := [consts.LenFie]cells.FieldCell{}
-	for i, _ := range gf.Fields {
+	for i := range gf.Fields {
 		fields[i] = gf.Fields[i].Clone()
 	}
 
