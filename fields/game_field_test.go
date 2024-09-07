@@ -710,3 +710,187 @@ func Test_calcMaxMovableCardNum(t *testing.T) {
 		})
 	}
 }
+
+func createGameField() GameField {
+	return GameField{
+		Homes: map[uint8]cells.HomeCell{
+			suits[0]: {
+				SuitCode:  suits[0],
+				CardStack: []cards.Card{},
+			},
+			suits[1]: {
+				SuitCode:  suits[1],
+				CardStack: []cards.Card{{Code: uint8(17)}},
+			},
+			suits[2]: {
+				SuitCode:  suits[2],
+				CardStack: []cards.Card{},
+			},
+			suits[3]: {
+				SuitCode:  suits[3],
+				CardStack: []cards.Card{},
+			},
+		},
+		Frees: [consts.LenFre]cells.FreeCell{
+			{CardStack: []cards.Card{}},
+			{CardStack: []cards.Card{}},
+			{CardStack: []cards.Card{{Code: uint8(34)}}},
+			{CardStack: []cards.Card{{Code: uint8(1)}}},
+		},
+		Fields: [consts.LenFie]cells.FieldCell{
+			{
+				CardStack: []cards.Card{{Code: uint8(35)}, {Code: uint8(18)}},
+			},
+			{
+				CardStack: []cards.Card{{Code: uint8(39)}, {Code: uint8(22)}},
+			},
+			{
+				CardStack: []cards.Card{{Code: uint8(24)}},
+			},
+			{
+				CardStack: []cards.Card{},
+			},
+			{
+				CardStack: []cards.Card{},
+			},
+			{
+				CardStack: []cards.Card{},
+			},
+			{
+				CardStack: []cards.Card{},
+			},
+			{
+				CardStack: []cards.Card{},
+			},
+		},
+	}
+}
+
+func TestGameField_move(t *testing.T) {
+	type args struct {
+		fieldTypeFrom string
+		indexFrom     int
+		fieldTypeTo   string
+		indexTo       int
+	}
+	tests := []struct {
+		name       string
+		fields     GameField
+		args       args
+		wantFields GameField
+		wantErr    bool
+		wantErrMsg string
+	}{
+		{
+			name:   "free to home",
+			fields: createGameField(),
+			args: args{
+				fieldTypeFrom: "free",
+				indexFrom:     3,
+				fieldTypeTo:   "home",
+				indexTo:       0,
+			},
+			wantFields: GameField{
+				Homes: map[uint8]cells.HomeCell{
+					suits[0]: {
+						SuitCode:  suits[0],
+						CardStack: []cards.Card{{Code: uint8(1)}},
+					},
+					suits[1]: {
+						SuitCode:  suits[1],
+						CardStack: []cards.Card{{Code: uint8(17)}},
+					},
+					suits[2]: {
+						SuitCode:  suits[2],
+						CardStack: []cards.Card{},
+					},
+					suits[3]: {
+						SuitCode:  suits[3],
+						CardStack: []cards.Card{},
+					},
+				},
+				Frees: [consts.LenFre]cells.FreeCell{
+					{CardStack: []cards.Card{}},
+					{CardStack: []cards.Card{}},
+					{CardStack: []cards.Card{{Code: uint8(34)}}},
+					{CardStack: []cards.Card{}},
+				},
+				Fields: [consts.LenFie]cells.FieldCell{
+					{
+						CardStack: []cards.Card{{Code: uint8(35)}, {Code: uint8(18)}},
+					},
+					{
+						CardStack: []cards.Card{{Code: uint8(39)}, {Code: uint8(22)}},
+					},
+					{
+						CardStack: []cards.Card{{Code: uint8(24)}},
+					},
+					{
+						CardStack: []cards.Card{},
+					},
+					{
+						CardStack: []cards.Card{},
+					},
+					{
+						CardStack: []cards.Card{},
+					},
+					{
+						CardStack: []cards.Card{},
+					},
+					{
+						CardStack: []cards.Card{},
+					},
+				},
+			},
+			wantErr:    false,
+			wantErrMsg: "",
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			gf := &GameField{
+				Homes:  tt.fields.Homes,
+				Frees:  tt.fields.Frees,
+				Fields: tt.fields.Fields,
+			}
+
+			err := gf.move(tt.args.fieldTypeFrom, tt.args.indexFrom, tt.args.fieldTypeTo, tt.args.indexTo)
+
+			if (err != nil) != tt.wantErr {
+				t.Errorf("move() error = %v, wantErr %v", err, tt.wantErr)
+			}
+			if tt.wantErr {
+				if err.Error() != tt.wantErrMsg {
+					t.Errorf("move() errorMsg = %v, wantErrMsg %v", err.Error(), tt.wantErrMsg)
+				}
+			} else {
+				// check HomeCell equality
+				for _, c := range suits {
+					act := gf.Homes[c].CardStack
+					exp := tt.wantFields.Homes[c].CardStack
+					if !cells.EqualStack(&act, &exp) {
+						t.Errorf("move() it does not match CardStack of Home[%v]", c)
+					}
+				}
+
+				// check FreeCell equality
+				for i := 0; i < consts.LenFre; i++ {
+					act := gf.Frees[i].CardStack
+					exp := tt.wantFields.Frees[i].CardStack
+					if !cells.EqualStack(&act, &exp) {
+						t.Errorf("move() it does not match CardStack of Free[%v]", i)
+					}
+				}
+
+				// check FieldCell equality
+				for i := 0; i < consts.LenFie; i++ {
+					act := gf.Fields[i].CardStack
+					exp := tt.wantFields.Fields[i].CardStack
+					if !cells.EqualStack(&act, &exp) {
+						t.Errorf("move() it does not match CardStack of Field[%v]", i)
+					}
+				}
+			}
+		})
+	}
+}

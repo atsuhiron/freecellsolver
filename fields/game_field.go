@@ -163,13 +163,43 @@ func (gf *GameField) clone() GameField {
 }
 
 func (gf *GameField) move(fieldTypeFrom string, indexFrom int, fieldTypeTo string, indexTo int) error {
-	if !strings.EqualFold(fieldTypeFrom, "home") || !strings.EqualFold(fieldTypeFrom, "free") || !strings.EqualFold(fieldTypeFrom, "field") {
+	if !strings.EqualFold(fieldTypeFrom, "free") && !strings.EqualFold(fieldTypeFrom, "field") {
 		return fmt.Errorf("invalid fieldTypeFrom %v", fieldTypeFrom)
 	}
-	if !strings.EqualFold(fieldTypeTo, "home") || !strings.EqualFold(fieldTypeTo, "free") || !strings.EqualFold(fieldTypeTo, "field") {
+	if !strings.EqualFold(fieldTypeTo, "home") && !strings.EqualFold(fieldTypeTo, "free") && !strings.EqualFold(fieldTypeTo, "field") {
 		return fmt.Errorf("invalid fieldTypeTo %v", fieldTypeTo)
 	}
-	// TODO: implement
+
+	// cut
+	var seq []cards.Card
+	if strings.EqualFold(fieldTypeFrom, "free") {
+		seq = make([]cards.Card, 0, 1) // 常に長さが1なので、cap=1
+		c := gf.Frees[indexFrom]
+		seq = c.GetEndSeq()
+		if err := c.RemoveEndSeq(len(seq)); err != nil {
+			return err
+		}
+	} else {
+		// Field
+		seq = make([]cards.Card, 0, 12) // 長さは12以下であるので cap=12
+		c := gf.Fields[indexFrom]
+		seq = c.GetEndSeq()
+		if err := c.RemoveEndSeq(len(seq)); err != nil {
+			return err
+		}
+	}
+
+	// paste
+	if strings.EqualFold(fieldTypeTo, "free") {
+		gf.Frees[indexTo].Place(&seq)
+	} else if strings.EqualFold(fieldTypeTo, "field") {
+		gf.Fields[indexTo].Place(&seq)
+	} else {
+		// Home
+		c := gf.Homes[uint8(indexTo)]
+		c.Place(&seq)
+	}
+
 	return nil
 }
 
