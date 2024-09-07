@@ -138,11 +138,11 @@ func checkFreeCell(fre [][]cards.Card) bool {
 	return true
 }
 
-func convertHomeCell(hom map[uint8][]cards.Card) map[uint8]cells.HomeCell {
+func convertHomeCell(hom map[uint8][]cards.Card) map[uint8]*cells.HomeCell {
 	// TODO: ポインタに変える
-	homes := make(map[uint8]cells.HomeCell)
+	homes := make(map[uint8]*cells.HomeCell)
 	for i, cell := range hom {
-		homes[suits[i]] = cells.HomeCell{CardStack: cell}
+		homes[suits[i]] = &cells.HomeCell{CardStack: cell}
 	}
 	return homes
 }

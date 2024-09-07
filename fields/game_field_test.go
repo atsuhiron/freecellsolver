@@ -10,7 +10,7 @@ import (
 
 func TestGameField_CalcHashCode(t *testing.T) {
 	type fields struct {
-		Homes  map[uint8]cells.HomeCell
+		Homes  map[uint8]*cells.HomeCell
 		Frees  [consts.LenFre]cells.FreeCell
 		Fields [consts.LenFie]cells.FieldCell
 	}
@@ -22,7 +22,7 @@ func TestGameField_CalcHashCode(t *testing.T) {
 		{
 			name: "complex",
 			fields: fields{
-				Homes: map[uint8]cells.HomeCell{
+				Homes: map[uint8]*cells.HomeCell{
 					suits[0]: {CardStack: []cards.Card{{Code: uint8(1)}}},
 					suits[1]: {},
 					suits[2]: {CardStack: []cards.Card{{Code: uint8(33)}, {Code: uint8(34)}}},
@@ -70,7 +70,7 @@ func TestGameField_CalcHashCode(t *testing.T) {
 
 func TestGameField_IsFinished(t *testing.T) {
 	type fields struct {
-		Homes  map[uint8]cells.HomeCell
+		Homes  map[uint8]*cells.HomeCell
 		Frees  [consts.LenFre]cells.FreeCell
 		Fields [consts.LenFie]cells.FieldCell
 	}
@@ -82,7 +82,7 @@ func TestGameField_IsFinished(t *testing.T) {
 		{
 			name: "empty",
 			fields: fields{
-				Homes: map[uint8]cells.HomeCell{
+				Homes: map[uint8]*cells.HomeCell{
 					suits[0]: {[]cards.Card{}, uint8(0)},
 					suits[1]: {[]cards.Card{}, uint8(1)},
 					suits[2]: {[]cards.Card{}, uint8(2)},
@@ -110,7 +110,7 @@ func TestGameField_IsFinished(t *testing.T) {
 		{
 			name: "filled one home",
 			fields: fields{
-				Homes: map[uint8]cells.HomeCell{
+				Homes: map[uint8]*cells.HomeCell{
 					suits[0]: {[]cards.Card{{Code: uint8(1)}, {Code: uint8(2)}, {Code: uint8(3)}, {Code: uint8(4)}, {Code: uint8(5)}, {Code: uint8(6)}, {Code: uint8(7)}, {Code: uint8(8)}, {Code: uint8(9)}, {Code: uint8(10)}, {Code: uint8(11)}, {Code: uint8(12)}, {Code: uint8(13)}}, uint8(0)},
 					suits[1]: {[]cards.Card{}, uint8(1)},
 					suits[2]: {[]cards.Card{}, uint8(2)},
@@ -138,7 +138,7 @@ func TestGameField_IsFinished(t *testing.T) {
 		{
 			name: "filled all home",
 			fields: fields{
-				Homes: map[uint8]cells.HomeCell{
+				Homes: map[uint8]*cells.HomeCell{
 					suits[0]: {[]cards.Card{{Code: uint8(1)}, {Code: uint8(2)}, {Code: uint8(3)}, {Code: uint8(4)}, {Code: uint8(5)}, {Code: uint8(6)}, {Code: uint8(7)}, {Code: uint8(8)}, {Code: uint8(9)}, {Code: uint8(10)}, {Code: uint8(11)}, {Code: uint8(12)}, {Code: uint8(13)}}, uint8(0)},
 					suits[1]: {[]cards.Card{{Code: uint8(17)}, {Code: uint8(18)}, {Code: uint8(19)}, {Code: uint8(20)}, {Code: uint8(21)}, {Code: uint8(22)}, {Code: uint8(23)}, {Code: uint8(24)}, {Code: uint8(25)}, {Code: uint8(26)}, {Code: uint8(27)}, {Code: uint8(28)}, {Code: uint8(29)}}, uint8(1)},
 					suits[2]: {[]cards.Card{{Code: uint8(33)}, {Code: uint8(34)}, {Code: uint8(35)}, {Code: uint8(36)}, {Code: uint8(37)}, {Code: uint8(38)}, {Code: uint8(39)}, {Code: uint8(40)}, {Code: uint8(41)}, {Code: uint8(42)}, {Code: uint8(43)}, {Code: uint8(44)}, {Code: uint8(45)}}, uint8(2)},
@@ -465,7 +465,7 @@ func Test_calcFreeHash(t *testing.T) {
 
 func Test_calcHomeHash(t *testing.T) {
 	type args struct {
-		homes map[uint8]cells.HomeCell
+		homes map[uint8]*cells.HomeCell
 	}
 	tests := []struct {
 		name string
@@ -475,7 +475,7 @@ func Test_calcHomeHash(t *testing.T) {
 		{
 			name: "empty (nil)",
 			args: args{
-				homes: map[uint8]cells.HomeCell{
+				homes: map[uint8]*cells.HomeCell{
 					suits[0]: {},
 					suits[1]: {},
 					suits[2]: {},
@@ -487,7 +487,7 @@ func Test_calcHomeHash(t *testing.T) {
 		{
 			name: "empty (defined)",
 			args: args{
-				homes: map[uint8]cells.HomeCell{
+				homes: map[uint8]*cells.HomeCell{
 					suits[0]: {[]cards.Card{}, uint8(0)},
 					suits[1]: {[]cards.Card{}, uint8(1)},
 					suits[2]: {[]cards.Card{}, uint8(2)},
@@ -499,7 +499,7 @@ func Test_calcHomeHash(t *testing.T) {
 		{
 			name: "one card 1",
 			args: args{
-				homes: map[uint8]cells.HomeCell{
+				homes: map[uint8]*cells.HomeCell{
 					suits[0]: {CardStack: []cards.Card{{Code: uint8(1)}}},
 					suits[1]: {},
 					suits[2]: {},
@@ -511,7 +511,7 @@ func Test_calcHomeHash(t *testing.T) {
 		{
 			name: "one card 2",
 			args: args{
-				homes: map[uint8]cells.HomeCell{
+				homes: map[uint8]*cells.HomeCell{
 					suits[0]: {},
 					suits[1]: {CardStack: []cards.Card{{Code: uint8(17)}}},
 					suits[2]: {},
@@ -523,7 +523,7 @@ func Test_calcHomeHash(t *testing.T) {
 		{
 			name: "one card 3",
 			args: args{
-				homes: map[uint8]cells.HomeCell{
+				homes: map[uint8]*cells.HomeCell{
 					suits[0]: {},
 					suits[1]: {},
 					suits[2]: {CardStack: []cards.Card{{Code: uint8(33)}}},
@@ -535,7 +535,7 @@ func Test_calcHomeHash(t *testing.T) {
 		{
 			name: "one card 4",
 			args: args{
-				homes: map[uint8]cells.HomeCell{
+				homes: map[uint8]*cells.HomeCell{
 					suits[0]: {},
 					suits[1]: {},
 					suits[2]: {},
@@ -547,7 +547,7 @@ func Test_calcHomeHash(t *testing.T) {
 		{
 			name: "multi cards",
 			args: args{
-				homes: map[uint8]cells.HomeCell{
+				homes: map[uint8]*cells.HomeCell{
 					suits[0]: {CardStack: []cards.Card{{Code: uint8(1)}}},
 					suits[1]: {},
 					suits[2]: {CardStack: []cards.Card{{Code: uint8(33)}, {Code: uint8(34)}}},
@@ -713,7 +713,7 @@ func Test_calcMaxMovableCardNum(t *testing.T) {
 
 func createGameField() GameField {
 	return GameField{
-		Homes: map[uint8]cells.HomeCell{
+		Homes: map[uint8]*cells.HomeCell{
 			suits[0]: {
 				SuitCode:  suits[0],
 				CardStack: []cards.Card{},
@@ -791,7 +791,7 @@ func TestGameField_move(t *testing.T) {
 				indexTo:       0,
 			},
 			wantFields: GameField{
-				Homes: map[uint8]cells.HomeCell{
+				Homes: map[uint8]*cells.HomeCell{
 					suits[0]: {
 						SuitCode:  suits[0],
 						CardStack: []cards.Card{{Code: uint8(1)}},

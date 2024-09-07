@@ -11,7 +11,7 @@ import (
 )
 
 type GameField struct {
-	Homes  map[uint8]cells.HomeCell
+	Homes  map[uint8]*cells.HomeCell
 	Frees  [consts.LenFre]cells.FreeCell
 	Fields [consts.LenFie]cells.FieldCell
 }
@@ -72,8 +72,7 @@ func calcMaxMovableCardNum(free int, field int) int {
 	return (field + 1) * (free + 1)
 }
 
-func calcHomeHash(homes map[uint8]cells.HomeCell) uint64 {
-	// TODO: ポインタにする
+func calcHomeHash(homes map[uint8]*cells.HomeCell) uint64 {
 	homeCode := uint64(0)
 	for _, sc := range suits {
 		stack := homes[sc].CardStack
@@ -140,7 +139,7 @@ func calcFieldHash(fields [consts.LenFie]cells.FieldCell) [consts.MaxFieNum]uint
 }
 
 func (gf *GameField) clone() GameField {
-	homes := make(map[uint8]cells.HomeCell)
+	homes := make(map[uint8]*cells.HomeCell)
 	for suit, cell := range gf.Homes {
 		homes[suit] = cell.Clone()
 	}
