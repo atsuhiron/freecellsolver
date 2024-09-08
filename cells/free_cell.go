@@ -33,8 +33,8 @@ func (fCell *FreeCell) Place(seq *[]cards.Card) {
 	fCell.CardStack = append(fCell.CardStack, *seq...)
 }
 
-func (fCell *FreeCell) Clone() FreeCell {
+func (fCell *FreeCell) Clone() *FreeCell {
 	cloneStack := make([]cards.Card, len(fCell.CardStack))
 	copy(cloneStack, fCell.CardStack)
-	return FreeCell{cloneStack}
+	return &FreeCell{cloneStack}
 }

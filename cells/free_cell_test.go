@@ -83,14 +83,14 @@ func TestFreeCell_Clone(t *testing.T) {
 	tests := []struct {
 		name   string
 		fields fields
-		want   FreeCell
+		want   *FreeCell
 	}{
 		{
 			name: "empty stack",
 			fields: fields{
 				CardStack: []cards.Card{},
 			},
-			want: FreeCell{
+			want: &FreeCell{
 				CardStack: []cards.Card{},
 			},
 		},
@@ -99,7 +99,7 @@ func TestFreeCell_Clone(t *testing.T) {
 			fields: fields{
 				CardStack: []cards.Card{{uint8(1)}},
 			},
-			want: FreeCell{
+			want: &FreeCell{
 				CardStack: []cards.Card{{uint8(1)}},
 			},
 		},
@@ -111,7 +111,7 @@ func TestFreeCell_Clone(t *testing.T) {
 			}
 			got := fCell.Clone()
 			if !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("Clone() = %v, want %v", got, tt.want)
+				t.Errorf("Clone() = %v, want %v", *got, *tt.want)
 			}
 			if &got.CardStack == &tt.fields.CardStack {
 				t.Errorf("Cloned cell has same pointer")

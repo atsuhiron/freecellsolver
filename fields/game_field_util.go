@@ -138,29 +138,29 @@ func checkFreeCell(fre [][]cards.Card) bool {
 	return true
 }
 
-func convertHomeCell(hom map[uint8][]cards.Card) map[uint8]cells.HomeCell {
+func convertHomeCell(hom map[uint8][]cards.Card) map[uint8]*cells.HomeCell {
 	// TODO: ポインタに変える
-	homes := make(map[uint8]cells.HomeCell)
+	homes := make(map[uint8]*cells.HomeCell)
 	for i, cell := range hom {
-		homes[suits[i]] = cells.HomeCell{CardStack: cell}
+		homes[suits[i]] = &cells.HomeCell{CardStack: cell}
 	}
 	return homes
 }
 
-func convertFreeCell(fre [][]cards.Card) [consts.LenFre]cells.FreeCell {
+func convertFreeCell(fre [][]cards.Card) [consts.LenFre]*cells.FreeCell {
 	// TODO: ポインタに変える
-	frees := [consts.LenFre]cells.FreeCell{}
+	frees := [consts.LenFre]*cells.FreeCell{}
 	for i, cell := range fre {
-		frees[i] = cells.FreeCell{CardStack: cell}
+		frees[i] = &cells.FreeCell{CardStack: cell}
 	}
 	return frees
 }
 
-func convertFieldCell(fie [][]cards.Card) [consts.LenFie]cells.FieldCell {
+func convertFieldCell(fie [][]cards.Card) [consts.LenFie]*cells.FieldCell {
 	// TODO: ポインタに変える
-	fields := [consts.LenFie]cells.FieldCell{}
+	fields := [consts.LenFie]*cells.FieldCell{}
 	for i, cell := range fie {
-		fields[i] = cells.FieldCell{CardStack: cell}
+		fields[i] = &cells.FieldCell{CardStack: cell}
 	}
 	return fields
 }

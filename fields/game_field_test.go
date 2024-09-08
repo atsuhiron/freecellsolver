@@ -10,9 +10,9 @@ import (
 
 func TestGameField_CalcHashCode(t *testing.T) {
 	type fields struct {
-		Homes  map[uint8]cells.HomeCell
-		Frees  [consts.LenFre]cells.FreeCell
-		Fields [consts.LenFie]cells.FieldCell
+		Homes  map[uint8]*cells.HomeCell
+		Frees  [consts.LenFre]*cells.FreeCell
+		Fields [consts.LenFie]*cells.FieldCell
 	}
 	tests := []struct {
 		name   string
@@ -22,19 +22,19 @@ func TestGameField_CalcHashCode(t *testing.T) {
 		{
 			name: "complex",
 			fields: fields{
-				Homes: map[uint8]cells.HomeCell{
+				Homes: map[uint8]*cells.HomeCell{
 					suits[0]: {CardStack: []cards.Card{{Code: uint8(1)}}},
 					suits[1]: {},
 					suits[2]: {CardStack: []cards.Card{{Code: uint8(33)}, {Code: uint8(34)}}},
 					suits[3]: {},
 				},
-				Frees: [consts.LenFre]cells.FreeCell{
+				Frees: [consts.LenFre]*cells.FreeCell{
 					{CardStack: []cards.Card{{Code: uint8(34)}}},
 					{CardStack: []cards.Card{}},
 					{CardStack: []cards.Card{{Code: uint8(18)}}},
 					{CardStack: []cards.Card{}},
 				},
-				Fields: [consts.LenFie]cells.FieldCell{
+				Fields: [consts.LenFie]*cells.FieldCell{
 					{CardStack: []cards.Card{}},
 					{CardStack: []cards.Card{{Code: uint8(35)}, {Code: uint8(18)}}},
 					{CardStack: []cards.Card{}},
@@ -70,9 +70,9 @@ func TestGameField_CalcHashCode(t *testing.T) {
 
 func TestGameField_IsFinished(t *testing.T) {
 	type fields struct {
-		Homes  map[uint8]cells.HomeCell
-		Frees  [consts.LenFre]cells.FreeCell
-		Fields [consts.LenFie]cells.FieldCell
+		Homes  map[uint8]*cells.HomeCell
+		Frees  [consts.LenFre]*cells.FreeCell
+		Fields [consts.LenFie]*cells.FieldCell
 	}
 	tests := []struct {
 		name   string
@@ -82,19 +82,19 @@ func TestGameField_IsFinished(t *testing.T) {
 		{
 			name: "empty",
 			fields: fields{
-				Homes: map[uint8]cells.HomeCell{
+				Homes: map[uint8]*cells.HomeCell{
 					suits[0]: {[]cards.Card{}, uint8(0)},
 					suits[1]: {[]cards.Card{}, uint8(1)},
 					suits[2]: {[]cards.Card{}, uint8(2)},
 					suits[3]: {[]cards.Card{}, uint8(3)},
 				},
-				Frees: [consts.LenFre]cells.FreeCell{
+				Frees: [consts.LenFre]*cells.FreeCell{
 					{CardStack: []cards.Card{}},
 					{CardStack: []cards.Card{}},
 					{CardStack: []cards.Card{}},
 					{CardStack: []cards.Card{}},
 				},
-				Fields: [consts.LenFie]cells.FieldCell{
+				Fields: [consts.LenFie]*cells.FieldCell{
 					{CardStack: []cards.Card{}},
 					{CardStack: []cards.Card{}},
 					{CardStack: []cards.Card{}},
@@ -110,19 +110,19 @@ func TestGameField_IsFinished(t *testing.T) {
 		{
 			name: "filled one home",
 			fields: fields{
-				Homes: map[uint8]cells.HomeCell{
+				Homes: map[uint8]*cells.HomeCell{
 					suits[0]: {[]cards.Card{{Code: uint8(1)}, {Code: uint8(2)}, {Code: uint8(3)}, {Code: uint8(4)}, {Code: uint8(5)}, {Code: uint8(6)}, {Code: uint8(7)}, {Code: uint8(8)}, {Code: uint8(9)}, {Code: uint8(10)}, {Code: uint8(11)}, {Code: uint8(12)}, {Code: uint8(13)}}, uint8(0)},
 					suits[1]: {[]cards.Card{}, uint8(1)},
 					suits[2]: {[]cards.Card{}, uint8(2)},
 					suits[3]: {[]cards.Card{}, uint8(3)},
 				},
-				Frees: [consts.LenFre]cells.FreeCell{
+				Frees: [consts.LenFre]*cells.FreeCell{
 					{CardStack: []cards.Card{}},
 					{CardStack: []cards.Card{}},
 					{CardStack: []cards.Card{}},
 					{CardStack: []cards.Card{}},
 				},
-				Fields: [consts.LenFie]cells.FieldCell{
+				Fields: [consts.LenFie]*cells.FieldCell{
 					{CardStack: []cards.Card{}},
 					{CardStack: []cards.Card{}},
 					{CardStack: []cards.Card{}},
@@ -138,19 +138,19 @@ func TestGameField_IsFinished(t *testing.T) {
 		{
 			name: "filled all home",
 			fields: fields{
-				Homes: map[uint8]cells.HomeCell{
+				Homes: map[uint8]*cells.HomeCell{
 					suits[0]: {[]cards.Card{{Code: uint8(1)}, {Code: uint8(2)}, {Code: uint8(3)}, {Code: uint8(4)}, {Code: uint8(5)}, {Code: uint8(6)}, {Code: uint8(7)}, {Code: uint8(8)}, {Code: uint8(9)}, {Code: uint8(10)}, {Code: uint8(11)}, {Code: uint8(12)}, {Code: uint8(13)}}, uint8(0)},
 					suits[1]: {[]cards.Card{{Code: uint8(17)}, {Code: uint8(18)}, {Code: uint8(19)}, {Code: uint8(20)}, {Code: uint8(21)}, {Code: uint8(22)}, {Code: uint8(23)}, {Code: uint8(24)}, {Code: uint8(25)}, {Code: uint8(26)}, {Code: uint8(27)}, {Code: uint8(28)}, {Code: uint8(29)}}, uint8(1)},
 					suits[2]: {[]cards.Card{{Code: uint8(33)}, {Code: uint8(34)}, {Code: uint8(35)}, {Code: uint8(36)}, {Code: uint8(37)}, {Code: uint8(38)}, {Code: uint8(39)}, {Code: uint8(40)}, {Code: uint8(41)}, {Code: uint8(42)}, {Code: uint8(43)}, {Code: uint8(44)}, {Code: uint8(45)}}, uint8(2)},
 					suits[3]: {[]cards.Card{{Code: uint8(49)}, {Code: uint8(50)}, {Code: uint8(51)}, {Code: uint8(52)}, {Code: uint8(53)}, {Code: uint8(54)}, {Code: uint8(55)}, {Code: uint8(56)}, {Code: uint8(57)}, {Code: uint8(58)}, {Code: uint8(59)}, {Code: uint8(60)}, {Code: uint8(61)}}, uint8(3)},
 				},
-				Frees: [consts.LenFre]cells.FreeCell{
+				Frees: [consts.LenFre]*cells.FreeCell{
 					{CardStack: []cards.Card{}},
 					{CardStack: []cards.Card{}},
 					{CardStack: []cards.Card{}},
 					{CardStack: []cards.Card{}},
 				},
-				Fields: [consts.LenFie]cells.FieldCell{
+				Fields: [consts.LenFie]*cells.FieldCell{
 					{CardStack: []cards.Card{}},
 					{CardStack: []cards.Card{}},
 					{CardStack: []cards.Card{}},
@@ -180,7 +180,7 @@ func TestGameField_IsFinished(t *testing.T) {
 
 func Test_calcFieldHash(t *testing.T) {
 	type args struct {
-		fields [consts.LenFie]cells.FieldCell
+		fields [consts.LenFie]*cells.FieldCell
 	}
 	tests := []struct {
 		name string
@@ -190,7 +190,7 @@ func Test_calcFieldHash(t *testing.T) {
 		{
 			name: "empty (nil)",
 			args: args{
-				fields: [consts.LenFie]cells.FieldCell{},
+				fields: [consts.LenFie]*cells.FieldCell{},
 			},
 			want: [consts.MaxFieNum]uint64{
 				0, 0, 0, 0, 0,
@@ -202,7 +202,7 @@ func Test_calcFieldHash(t *testing.T) {
 		{
 			name: "empty (defined)",
 			args: args{
-				fields: [consts.LenFie]cells.FieldCell{
+				fields: [consts.LenFie]*cells.FieldCell{
 					{CardStack: []cards.Card{}},
 					{CardStack: []cards.Card{}},
 					{CardStack: []cards.Card{}},
@@ -223,7 +223,7 @@ func Test_calcFieldHash(t *testing.T) {
 		{
 			name: "one card",
 			args: args{
-				fields: [consts.LenFie]cells.FieldCell{
+				fields: [consts.LenFie]*cells.FieldCell{
 					{CardStack: []cards.Card{{Code: uint8(7)}}},
 					{CardStack: []cards.Card{}},
 					{CardStack: []cards.Card{}},
@@ -244,7 +244,7 @@ func Test_calcFieldHash(t *testing.T) {
 		{
 			name: "one card (another order)",
 			args: args{
-				fields: [consts.LenFie]cells.FieldCell{
+				fields: [consts.LenFie]*cells.FieldCell{
 					{CardStack: []cards.Card{}},
 					{CardStack: []cards.Card{}},
 					{CardStack: []cards.Card{}},
@@ -265,7 +265,7 @@ func Test_calcFieldHash(t *testing.T) {
 		{
 			name: "multi card, one field",
 			args: args{
-				fields: [consts.LenFie]cells.FieldCell{
+				fields: [consts.LenFie]*cells.FieldCell{
 					{CardStack: []cards.Card{{Code: uint8(7)}, {Code: uint8(22)}}},
 					{CardStack: []cards.Card{}},
 					{CardStack: []cards.Card{}},
@@ -286,7 +286,7 @@ func Test_calcFieldHash(t *testing.T) {
 		{
 			name: "multi card, one field (another order)",
 			args: args{
-				fields: [consts.LenFie]cells.FieldCell{
+				fields: [consts.LenFie]*cells.FieldCell{
 					{CardStack: []cards.Card{}},
 					{CardStack: []cards.Card{}},
 					{CardStack: []cards.Card{}},
@@ -307,7 +307,7 @@ func Test_calcFieldHash(t *testing.T) {
 		{
 			name: "multi card, multi field",
 			args: args{
-				fields: [consts.LenFie]cells.FieldCell{
+				fields: [consts.LenFie]*cells.FieldCell{
 					{CardStack: []cards.Card{{Code: uint8(7)}, {Code: uint8(22)}}},
 					{CardStack: []cards.Card{{Code: uint8(35)}, {Code: uint8(18)}}},
 					{CardStack: []cards.Card{}},
@@ -328,7 +328,7 @@ func Test_calcFieldHash(t *testing.T) {
 		{
 			name: "multi card, multi field (another order)",
 			args: args{
-				fields: [consts.LenFie]cells.FieldCell{
+				fields: [consts.LenFie]*cells.FieldCell{
 					{CardStack: []cards.Card{}},
 					{CardStack: []cards.Card{{Code: uint8(35)}, {Code: uint8(18)}}},
 					{CardStack: []cards.Card{}},
@@ -349,7 +349,7 @@ func Test_calcFieldHash(t *testing.T) {
 		{
 			name: "multi card, one field (long sequence)",
 			args: args{
-				fields: [consts.LenFie]cells.FieldCell{
+				fields: [consts.LenFie]*cells.FieldCell{
 					{CardStack: []cards.Card{}},
 					{CardStack: []cards.Card{{Code: uint8(13)}, {Code: uint8(28)}, {Code: uint8(11)}, {Code: uint8(26)}, {Code: uint8(9)}, {Code: uint8(24)}, {Code: uint8(7)}, {Code: uint8(22)}, {Code: uint8(5)}, {Code: uint8(20)}, {Code: uint8(3)}, {Code: uint8(18)}, {Code: uint8(1)}}},
 					{CardStack: []cards.Card{}},
@@ -379,7 +379,7 @@ func Test_calcFieldHash(t *testing.T) {
 
 func Test_calcFreeHash(t *testing.T) {
 	type args struct {
-		frees [consts.LenFre]cells.FreeCell
+		frees [consts.LenFre]*cells.FreeCell
 	}
 	tests := []struct {
 		name string
@@ -389,14 +389,14 @@ func Test_calcFreeHash(t *testing.T) {
 		{
 			name: "empty (nil)",
 			args: args{
-				frees: [consts.LenFre]cells.FreeCell{},
+				frees: [consts.LenFre]*cells.FreeCell{},
 			},
 			want: uint64(0),
 		},
 		{
 			name: "empty (defined)",
 			args: args{
-				frees: [consts.LenFre]cells.FreeCell{
+				frees: [consts.LenFre]*cells.FreeCell{
 					{CardStack: []cards.Card{}},
 					{CardStack: []cards.Card{}},
 					{CardStack: []cards.Card{}},
@@ -408,7 +408,7 @@ func Test_calcFreeHash(t *testing.T) {
 		{
 			name: "one card 1",
 			args: args{
-				frees: [consts.LenFre]cells.FreeCell{
+				frees: [consts.LenFre]*cells.FreeCell{
 					{CardStack: []cards.Card{{Code: uint8(5)}}},
 					{CardStack: []cards.Card{}},
 					{CardStack: []cards.Card{}},
@@ -420,7 +420,7 @@ func Test_calcFreeHash(t *testing.T) {
 		{
 			name: "one card 1 (another order)",
 			args: args{
-				frees: [consts.LenFre]cells.FreeCell{
+				frees: [consts.LenFre]*cells.FreeCell{
 					{CardStack: []cards.Card{}},
 					{CardStack: []cards.Card{}},
 					{CardStack: []cards.Card{{Code: uint8(5)}}},
@@ -432,7 +432,7 @@ func Test_calcFreeHash(t *testing.T) {
 		{
 			name: "multi cards",
 			args: args{
-				frees: [consts.LenFre]cells.FreeCell{
+				frees: [consts.LenFre]*cells.FreeCell{
 					{CardStack: []cards.Card{{Code: uint8(34)}}},
 					{CardStack: []cards.Card{}},
 					{CardStack: []cards.Card{{Code: uint8(18)}}},
@@ -444,7 +444,7 @@ func Test_calcFreeHash(t *testing.T) {
 		{
 			name: "multi cards (another order)",
 			args: args{
-				frees: [consts.LenFre]cells.FreeCell{
+				frees: [consts.LenFre]*cells.FreeCell{
 					{CardStack: []cards.Card{{Code: uint8(18)}}},
 					{CardStack: []cards.Card{{Code: uint8(34)}}},
 					{CardStack: []cards.Card{}},
@@ -465,7 +465,7 @@ func Test_calcFreeHash(t *testing.T) {
 
 func Test_calcHomeHash(t *testing.T) {
 	type args struct {
-		homes map[uint8]cells.HomeCell
+		homes map[uint8]*cells.HomeCell
 	}
 	tests := []struct {
 		name string
@@ -475,7 +475,7 @@ func Test_calcHomeHash(t *testing.T) {
 		{
 			name: "empty (nil)",
 			args: args{
-				homes: map[uint8]cells.HomeCell{
+				homes: map[uint8]*cells.HomeCell{
 					suits[0]: {},
 					suits[1]: {},
 					suits[2]: {},
@@ -487,7 +487,7 @@ func Test_calcHomeHash(t *testing.T) {
 		{
 			name: "empty (defined)",
 			args: args{
-				homes: map[uint8]cells.HomeCell{
+				homes: map[uint8]*cells.HomeCell{
 					suits[0]: {[]cards.Card{}, uint8(0)},
 					suits[1]: {[]cards.Card{}, uint8(1)},
 					suits[2]: {[]cards.Card{}, uint8(2)},
@@ -499,7 +499,7 @@ func Test_calcHomeHash(t *testing.T) {
 		{
 			name: "one card 1",
 			args: args{
-				homes: map[uint8]cells.HomeCell{
+				homes: map[uint8]*cells.HomeCell{
 					suits[0]: {CardStack: []cards.Card{{Code: uint8(1)}}},
 					suits[1]: {},
 					suits[2]: {},
@@ -511,7 +511,7 @@ func Test_calcHomeHash(t *testing.T) {
 		{
 			name: "one card 2",
 			args: args{
-				homes: map[uint8]cells.HomeCell{
+				homes: map[uint8]*cells.HomeCell{
 					suits[0]: {},
 					suits[1]: {CardStack: []cards.Card{{Code: uint8(17)}}},
 					suits[2]: {},
@@ -523,7 +523,7 @@ func Test_calcHomeHash(t *testing.T) {
 		{
 			name: "one card 3",
 			args: args{
-				homes: map[uint8]cells.HomeCell{
+				homes: map[uint8]*cells.HomeCell{
 					suits[0]: {},
 					suits[1]: {},
 					suits[2]: {CardStack: []cards.Card{{Code: uint8(33)}}},
@@ -535,7 +535,7 @@ func Test_calcHomeHash(t *testing.T) {
 		{
 			name: "one card 4",
 			args: args{
-				homes: map[uint8]cells.HomeCell{
+				homes: map[uint8]*cells.HomeCell{
 					suits[0]: {},
 					suits[1]: {},
 					suits[2]: {},
@@ -547,7 +547,7 @@ func Test_calcHomeHash(t *testing.T) {
 		{
 			name: "multi cards",
 			args: args{
-				homes: map[uint8]cells.HomeCell{
+				homes: map[uint8]*cells.HomeCell{
 					suits[0]: {CardStack: []cards.Card{{Code: uint8(1)}}},
 					suits[1]: {},
 					suits[2]: {CardStack: []cards.Card{{Code: uint8(33)}, {Code: uint8(34)}}},
@@ -713,7 +713,7 @@ func Test_calcMaxMovableCardNum(t *testing.T) {
 
 func createGameField() GameField {
 	return GameField{
-		Homes: map[uint8]cells.HomeCell{
+		Homes: map[uint8]*cells.HomeCell{
 			suits[0]: {
 				SuitCode:  suits[0],
 				CardStack: []cards.Card{},
@@ -731,13 +731,13 @@ func createGameField() GameField {
 				CardStack: []cards.Card{},
 			},
 		},
-		Frees: [consts.LenFre]cells.FreeCell{
+		Frees: [consts.LenFre]*cells.FreeCell{
 			{CardStack: []cards.Card{}},
 			{CardStack: []cards.Card{}},
 			{CardStack: []cards.Card{{Code: uint8(34)}}},
 			{CardStack: []cards.Card{{Code: uint8(1)}}},
 		},
-		Fields: [consts.LenFie]cells.FieldCell{
+		Fields: [consts.LenFie]*cells.FieldCell{
 			{
 				CardStack: []cards.Card{{Code: uint8(35)}, {Code: uint8(18)}},
 			},
@@ -791,7 +791,7 @@ func TestGameField_move(t *testing.T) {
 				indexTo:       0,
 			},
 			wantFields: GameField{
-				Homes: map[uint8]cells.HomeCell{
+				Homes: map[uint8]*cells.HomeCell{
 					suits[0]: {
 						SuitCode:  suits[0],
 						CardStack: []cards.Card{{Code: uint8(1)}},
@@ -809,13 +809,13 @@ func TestGameField_move(t *testing.T) {
 						CardStack: []cards.Card{},
 					},
 				},
-				Frees: [consts.LenFre]cells.FreeCell{
+				Frees: [consts.LenFre]*cells.FreeCell{
 					{CardStack: []cards.Card{}},
 					{CardStack: []cards.Card{}},
 					{CardStack: []cards.Card{{Code: uint8(34)}}},
 					{CardStack: []cards.Card{}},
 				},
-				Fields: [consts.LenFie]cells.FieldCell{
+				Fields: [consts.LenFie]*cells.FieldCell{
 					{
 						CardStack: []cards.Card{{Code: uint8(35)}, {Code: uint8(18)}},
 					},

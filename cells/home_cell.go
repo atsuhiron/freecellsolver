@@ -36,8 +36,8 @@ func (hCell *HomeCell) Place(seq *[]cards.Card) {
 	hCell.CardStack = append(hCell.CardStack, *seq...)
 }
 
-func (hCell *HomeCell) Clone() HomeCell {
+func (hCell *HomeCell) Clone() *HomeCell {
 	cloneStack := make([]cards.Card, len(hCell.CardStack))
 	copy(cloneStack, hCell.CardStack)
-	return HomeCell{cloneStack, hCell.SuitCode}
+	return &HomeCell{cloneStack, hCell.SuitCode}
 }
