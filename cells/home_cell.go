@@ -20,7 +20,7 @@ func (hCell *HomeCell) CanPlace(card cards.Card) bool {
 	return card.Code == hCell.CardStack[len(hCell.CardStack)-1].Code+1
 }
 
-func (hCell *HomeCell) GetEndSeq() []cards.Card {
+func (hCell *HomeCell) GetEndSeq(_ bool) []cards.Card {
 	return make([]cards.Card, 0)
 }
 

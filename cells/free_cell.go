@@ -14,7 +14,7 @@ func (fCell *FreeCell) CanPlace(_ cards.Card) bool {
 	return len(fCell.CardStack) == 0
 }
 
-func (fCell *FreeCell) GetEndSeq() []cards.Card {
+func (fCell *FreeCell) GetEndSeq(_ bool) []cards.Card {
 	if len(fCell.CardStack) == 0 {
 		return make([]cards.Card, 0)
 	}

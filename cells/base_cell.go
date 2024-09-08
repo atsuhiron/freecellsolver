@@ -6,6 +6,6 @@ import (
 
 type BaseCell interface {
 	CanPlace(card cards.Card) bool
-	GetEndSeq() []cards.Card
+	GetEndSeq(onlyLast bool) []cards.Card
 	RemoveEndSeq(removeNum int) error
 }

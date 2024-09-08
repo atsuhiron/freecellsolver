@@ -48,7 +48,7 @@ func (gf *GameField) GetBranch() []GameFieldBranch {
 
 	branch := make([]GameFieldBranch, 0, consts.LenFre+consts.LenFie)
 	for iSrc := 0; iSrc < consts.LenFie; iSrc++ {
-		seq := gf.Fields[iSrc].GetEndSeq()
+		seq := gf.Fields[iSrc].GetEndSeq(false) // TODO: よく考える
 		if len(seq) == 0 {
 			continue
 		}
@@ -173,13 +173,14 @@ func (gf *GameField) move(fieldTypeFrom string, indexFrom int, fieldTypeTo strin
 	if !strings.EqualFold(fieldTypeTo, "home") && !strings.EqualFold(fieldTypeTo, "free") && !strings.EqualFold(fieldTypeTo, "field") {
 		return fmt.Errorf("invalid fieldTypeTo %v", fieldTypeTo)
 	}
+	toHome := strings.EqualFold(fieldTypeTo, "home")
 
 	// cut
 	var seq []cards.Card
 	if strings.EqualFold(fieldTypeFrom, "free") {
 		seq = make([]cards.Card, 0, 1) // 常に長さが1なので、cap=1
 		c := gf.Frees[indexFrom]
-		seq = c.GetEndSeq()
+		seq = c.GetEndSeq(toHome)
 		if err := c.RemoveEndSeq(len(seq)); err != nil {
 			return err
 		}
@@ -187,7 +188,7 @@ func (gf *GameField) move(fieldTypeFrom string, indexFrom int, fieldTypeTo strin
 		// Field
 		seq = make([]cards.Card, 0, 12) // 長さは12以下であるので cap=12
 		c := gf.Fields[indexFrom]
-		seq = c.GetEndSeq()
+		seq = c.GetEndSeq(toHome)
 		if err := c.RemoveEndSeq(len(seq)); err != nil {
 			return err
 		}

@@ -48,19 +48,25 @@ func TestFreeCell_GetEndSeq(t *testing.T) {
 	type fields struct {
 		CardStack []cards.Card
 	}
+	type args struct {
+		onlyLast bool
+	}
 	tests := []struct {
 		name   string
 		fields fields
+		args   args
 		want   []cards.Card
 	}{
 		{
 			name:   "empty: return empty",
 			fields: fields{[]cards.Card{}},
+			args:   args{onlyLast: true},
 			want:   []cards.Card{},
 		},
 		{
 			name:   "filled: return it",
 			fields: fields{[]cards.Card{{uint8(1)}}},
+			args:   args{onlyLast: true},
 			want:   []cards.Card{{uint8(1)}},
 		},
 	}
@@ -69,7 +75,7 @@ func TestFreeCell_GetEndSeq(t *testing.T) {
 			fCell := FreeCell{
 				CardStack: tt.fields.CardStack,
 			}
-			if got := fCell.GetEndSeq(); !reflect.DeepEqual(got, tt.want) {
+			if got := fCell.GetEndSeq(tt.args.onlyLast); !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("GetEndSeq() = %v, want %v", got, tt.want)
 			}
 		})

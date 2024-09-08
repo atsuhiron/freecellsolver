@@ -85,9 +85,13 @@ func TestHomeCell_GetEndSeq(t *testing.T) {
 		CardStack []cards.Card
 		SuitCode  uint8
 	}
+	type args struct {
+		onlyLast bool
+	}
 	tests := []struct {
 		name   string
 		fields fields
+		args   args
 		want   []cards.Card
 	}{
 		{
@@ -96,6 +100,7 @@ func TestHomeCell_GetEndSeq(t *testing.T) {
 				CardStack: []cards.Card{},
 				SuitCode:  uint8(0),
 			},
+			args: args{onlyLast: true},
 			want: []cards.Card{},
 		},
 		{
@@ -109,6 +114,7 @@ func TestHomeCell_GetEndSeq(t *testing.T) {
 				},
 				SuitCode: uint8(0),
 			},
+			args: args{onlyLast: true},
 			want: []cards.Card{},
 		},
 	}
@@ -118,7 +124,7 @@ func TestHomeCell_GetEndSeq(t *testing.T) {
 				CardStack: tt.fields.CardStack,
 				SuitCode:  tt.fields.SuitCode,
 			}
-			if got := hCell.GetEndSeq(); !reflect.DeepEqual(got, tt.want) {
+			if got := hCell.GetEndSeq(tt.args.onlyLast); !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("GetEndSeq() = %v, want %v", got, tt.want)
 			}
 		})

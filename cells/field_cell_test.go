@@ -82,9 +82,13 @@ func TestFieldCell_GetEndSeq(t *testing.T) {
 	type fields struct {
 		CardStack []cards.Card
 	}
+	type args struct {
+		onlyLast bool
+	}
 	tests := []struct {
 		name   string
 		fields fields
+		args   args
 		want   []cards.Card
 	}{
 		{
@@ -92,6 +96,7 @@ func TestFieldCell_GetEndSeq(t *testing.T) {
 			fields: fields{
 				CardStack: []cards.Card{},
 			},
+			args: args{onlyLast: false},
 			want: []cards.Card{},
 		},
 		{
@@ -101,6 +106,7 @@ func TestFieldCell_GetEndSeq(t *testing.T) {
 					{uint8(1)},
 				},
 			},
+			args: args{onlyLast: false},
 			want: []cards.Card{
 				{uint8(1)},
 			},
@@ -115,6 +121,7 @@ func TestFieldCell_GetEndSeq(t *testing.T) {
 					{uint8(3)},
 				},
 			},
+			args: args{onlyLast: false},
 			want: []cards.Card{
 				{uint8(3)},
 			},
@@ -129,6 +136,7 @@ func TestFieldCell_GetEndSeq(t *testing.T) {
 					{uint8(3)},
 				},
 			},
+			args: args{onlyLast: false},
 			want: []cards.Card{
 				{uint8(3)},
 			},
@@ -143,6 +151,7 @@ func TestFieldCell_GetEndSeq(t *testing.T) {
 					{uint8(19)},
 				},
 			},
+			args: args{onlyLast: false},
 			want: []cards.Card{
 				{uint8(6)},
 				{uint8(21)},
@@ -160,6 +169,7 @@ func TestFieldCell_GetEndSeq(t *testing.T) {
 					{uint8(35)},
 				},
 			},
+			args: args{onlyLast: false},
 			want: []cards.Card{
 				{uint8(35)},
 			},
@@ -176,10 +186,34 @@ func TestFieldCell_GetEndSeq(t *testing.T) {
 					{uint8(5)},  // ♠5
 				},
 			},
+			args: args{onlyLast: false},
 			want: []cards.Card{
 				{uint8(39)}, // ♣7
 				{uint8(54)}, // ♦6
 				{uint8(5)},  // ♠5
+			},
+		},
+		{
+			name: "Empty stack: onlyLast, return empty",
+			fields: fields{
+				CardStack: []cards.Card{},
+			},
+			args: args{onlyLast: true},
+			want: []cards.Card{},
+		},
+		{
+			name: "Continued and alternation color stack: only last return last",
+			fields: fields{
+				CardStack: []cards.Card{
+					{uint8(6)},
+					{uint8(21)},
+					{uint8(4)},
+					{uint8(19)},
+				},
+			},
+			args: args{onlyLast: true},
+			want: []cards.Card{
+				{uint8(19)},
 			},
 		},
 	}
@@ -188,7 +222,7 @@ func TestFieldCell_GetEndSeq(t *testing.T) {
 			fCell := FieldCell{
 				CardStack: tt.fields.CardStack,
 			}
-			if got := fCell.GetEndSeq(); !reflect.DeepEqual(got, tt.want) {
+			if got := fCell.GetEndSeq(tt.args.onlyLast); !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("GetEndSeq() = %v, want %v", got, tt.want)
 			}
 		})

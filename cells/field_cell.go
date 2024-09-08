@@ -22,9 +22,13 @@ func (fCell *FieldCell) CanPlace(card cards.Card) bool {
 	return card.GetNumCode() == fCell.CardStack[len(fCell.CardStack)-1].GetNumCode()-uint8(1)
 }
 
-func (fCell *FieldCell) GetEndSeq() []cards.Card {
+func (fCell *FieldCell) GetEndSeq(onlyLast bool) []cards.Card {
 	if len(fCell.CardStack) == 0 {
 		return []cards.Card{}
+	}
+
+	if onlyLast {
+		return []cards.Card{fCell.CardStack[len(fCell.CardStack)-1]}
 	}
 
 	seq := make([]cards.Card, 0, len(fCell.CardStack))
