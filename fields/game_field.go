@@ -12,8 +12,8 @@ import (
 
 type GameField struct {
 	Homes  map[uint8]*cells.HomeCell
-	Frees  [consts.LenFre]cells.FreeCell
-	Fields [consts.LenFie]cells.FieldCell
+	Frees  [consts.LenFre]*cells.FreeCell
+	Fields [consts.LenFie]*cells.FieldCell
 }
 
 func (gf *GameField) CalcHashCode() [consts.LenHash]uint64 {
@@ -83,10 +83,13 @@ func calcHomeHash(homes map[uint8]*cells.HomeCell) uint64 {
 	return homeCode
 }
 
-func calcFreeHash(frees [consts.LenFre]cells.FreeCell) uint64 {
+func calcFreeHash(frees [consts.LenFre]*cells.FreeCell) uint64 {
 	freeCardCodes := make([]uint64, consts.LenFre)
 	for i, cell := range frees {
-		if len(cell.CardStack) == 0 {
+		if cell == nil {
+			// nil
+			freeCardCodes[i] = uint64(0)
+		} else if len(cell.CardStack) == 0 {
 			// empty
 			freeCardCodes[i] = uint64(0)
 		} else {
@@ -104,12 +107,14 @@ func calcFreeHash(frees [consts.LenFre]cells.FreeCell) uint64 {
 	return freeCode
 }
 
-func calcFieldHash(fields [consts.LenFie]cells.FieldCell) [consts.MaxFieNum]uint64 {
+func calcFieldHash(fields [consts.LenFie]*cells.FieldCell) [consts.MaxFieNum]uint64 {
 	fieldCardCodes := make(indexValue64, consts.LenFie)
 	for i, cell := range fields {
 		fieldCardCodes[i][0] = uint64(i)
-
-		if len(cell.CardStack) == 0 {
+		if cell == nil {
+			fieldCardCodes[i][1] = uint64(0)
+			fields[i] = &(cells.FieldCell{})
+		} else if len(cell.CardStack) == 0 {
 			fieldCardCodes[i][1] = uint64(0)
 		} else {
 			// As long as the patterns are the same field,
@@ -144,12 +149,12 @@ func (gf *GameField) clone() GameField {
 		homes[suit] = cell.Clone()
 	}
 
-	frees := [consts.LenFre]cells.FreeCell{}
+	frees := [consts.LenFre]*cells.FreeCell{}
 	for i := range gf.Frees {
 		frees[i] = gf.Frees[i].Clone()
 	}
 
-	fields := [consts.LenFie]cells.FieldCell{}
+	fields := [consts.LenFie]*cells.FieldCell{}
 	for i := range gf.Fields {
 		fields[i] = gf.Fields[i].Clone()
 	}
