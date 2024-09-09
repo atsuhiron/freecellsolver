@@ -742,7 +742,7 @@ func createGameField() GameField {
 				CardStack: []cards.Card{{Code: uint8(3)}, {Code: uint8(18)}},
 			},
 			{
-				CardStack: []cards.Card{{Code: uint8(39)}, {Code: uint8(22)}},
+				CardStack: []cards.Card{{Code: uint8(4)}, {Code: uint8(39)}, {Code: uint8(22)}},
 			},
 			{
 				CardStack: []cards.Card{{Code: uint8(24)}},
@@ -820,7 +820,7 @@ func TestGameField_move(t *testing.T) {
 						CardStack: []cards.Card{{Code: uint8(3)}, {Code: uint8(18)}},
 					},
 					{
-						CardStack: []cards.Card{{Code: uint8(39)}, {Code: uint8(22)}},
+						CardStack: []cards.Card{{Code: uint8(4)}, {Code: uint8(39)}, {Code: uint8(22)}},
 					},
 					{
 						CardStack: []cards.Card{{Code: uint8(24)}},
@@ -884,7 +884,7 @@ func TestGameField_move(t *testing.T) {
 						CardStack: []cards.Card{{Code: uint8(3)}},
 					},
 					{
-						CardStack: []cards.Card{{Code: uint8(39)}, {Code: uint8(22)}},
+						CardStack: []cards.Card{{Code: uint8(4)}, {Code: uint8(39)}, {Code: uint8(22)}},
 					},
 					{
 						CardStack: []cards.Card{{Code: uint8(24)}},
@@ -894,6 +894,198 @@ func TestGameField_move(t *testing.T) {
 					},
 					{
 						CardStack: []cards.Card{},
+					},
+					{
+						CardStack: []cards.Card{},
+					},
+					{
+						CardStack: []cards.Card{},
+					},
+					{
+						CardStack: []cards.Card{},
+					},
+				},
+			},
+			wantErr:    false,
+			wantErrMsg: "",
+		},
+		{
+			name:   "field to free",
+			fields: createGameField(),
+			args: args{
+				fieldTypeFrom: "field",
+				indexFrom:     1,
+				fieldTypeTo:   "free",
+				indexTo:       0,
+			},
+			wantFields: GameField{
+				Homes: map[uint8]*cells.HomeCell{
+					suits[0]: {
+						SuitCode:  suits[0],
+						CardStack: []cards.Card{},
+					},
+					suits[1]: {
+						SuitCode:  suits[1],
+						CardStack: []cards.Card{{Code: uint8(17)}},
+					},
+					suits[2]: {
+						SuitCode:  suits[2],
+						CardStack: []cards.Card{},
+					},
+					suits[3]: {
+						SuitCode:  suits[3],
+						CardStack: []cards.Card{},
+					},
+				},
+				Frees: [consts.LenFre]*cells.FreeCell{
+					{CardStack: []cards.Card{{Code: uint8(22)}}},
+					{CardStack: []cards.Card{}},
+					{CardStack: []cards.Card{{Code: uint8(34)}}},
+					{CardStack: []cards.Card{{Code: uint8(1)}}},
+				},
+				Fields: [consts.LenFie]*cells.FieldCell{
+					{
+						CardStack: []cards.Card{{Code: uint8(3)}, {Code: uint8(18)}},
+					},
+					{
+						CardStack: []cards.Card{{Code: uint8(4)}, {Code: uint8(39)}},
+					},
+					{
+						CardStack: []cards.Card{{Code: uint8(24)}},
+					},
+					{
+						CardStack: []cards.Card{{Code: uint8(35)}},
+					},
+					{
+						CardStack: []cards.Card{},
+					},
+					{
+						CardStack: []cards.Card{},
+					},
+					{
+						CardStack: []cards.Card{},
+					},
+					{
+						CardStack: []cards.Card{},
+					},
+				},
+			},
+			wantErr:    false,
+			wantErrMsg: "",
+		},
+		{
+			name:   "field to field",
+			fields: createGameField(),
+			args: args{
+				fieldTypeFrom: "field",
+				indexFrom:     1,
+				fieldTypeTo:   "field",
+				indexTo:       2,
+			},
+			wantFields: GameField{
+				Homes: map[uint8]*cells.HomeCell{
+					suits[0]: {
+						SuitCode:  suits[0],
+						CardStack: []cards.Card{},
+					},
+					suits[1]: {
+						SuitCode:  suits[1],
+						CardStack: []cards.Card{{Code: uint8(17)}},
+					},
+					suits[2]: {
+						SuitCode:  suits[2],
+						CardStack: []cards.Card{},
+					},
+					suits[3]: {
+						SuitCode:  suits[3],
+						CardStack: []cards.Card{},
+					},
+				},
+				Frees: [consts.LenFre]*cells.FreeCell{
+					{CardStack: []cards.Card{}},
+					{CardStack: []cards.Card{}},
+					{CardStack: []cards.Card{{Code: uint8(34)}}},
+					{CardStack: []cards.Card{{Code: uint8(1)}}},
+				},
+				Fields: [consts.LenFie]*cells.FieldCell{
+					{
+						CardStack: []cards.Card{{Code: uint8(3)}, {Code: uint8(18)}},
+					},
+					{
+						CardStack: []cards.Card{{Code: uint8(4)}},
+					},
+					{
+						CardStack: []cards.Card{{Code: uint8(24)}, {Code: uint8(39)}, {Code: uint8(22)}},
+					},
+					{
+						CardStack: []cards.Card{{Code: uint8(35)}},
+					},
+					{
+						CardStack: []cards.Card{},
+					},
+					{
+						CardStack: []cards.Card{},
+					},
+					{
+						CardStack: []cards.Card{},
+					},
+					{
+						CardStack: []cards.Card{},
+					},
+				},
+			},
+			wantErr:    false,
+			wantErrMsg: "",
+		},
+		{
+			name:   "free to field",
+			fields: createGameField(),
+			args: args{
+				fieldTypeFrom: "free",
+				indexFrom:     2,
+				fieldTypeTo:   "field",
+				indexTo:       4,
+			},
+			wantFields: GameField{
+				Homes: map[uint8]*cells.HomeCell{
+					suits[0]: {
+						SuitCode:  suits[0],
+						CardStack: []cards.Card{},
+					},
+					suits[1]: {
+						SuitCode:  suits[1],
+						CardStack: []cards.Card{{Code: uint8(17)}},
+					},
+					suits[2]: {
+						SuitCode:  suits[2],
+						CardStack: []cards.Card{},
+					},
+					suits[3]: {
+						SuitCode:  suits[3],
+						CardStack: []cards.Card{},
+					},
+				},
+				Frees: [consts.LenFre]*cells.FreeCell{
+					{CardStack: []cards.Card{}},
+					{CardStack: []cards.Card{}},
+					{CardStack: []cards.Card{}},
+					{CardStack: []cards.Card{{Code: uint8(1)}}},
+				},
+				Fields: [consts.LenFie]*cells.FieldCell{
+					{
+						CardStack: []cards.Card{{Code: uint8(3)}, {Code: uint8(18)}},
+					},
+					{
+						CardStack: []cards.Card{{Code: uint8(4)}, {Code: uint8(39)}, {Code: uint8(22)}},
+					},
+					{
+						CardStack: []cards.Card{{Code: uint8(24)}},
+					},
+					{
+						CardStack: []cards.Card{{Code: uint8(35)}},
+					},
+					{
+						CardStack: []cards.Card{{Code: uint8(34)}},
 					},
 					{
 						CardStack: []cards.Card{},
