@@ -1101,6 +1101,32 @@ func TestGameField_move(t *testing.T) {
 			wantErr:    false,
 			wantErrMsg: "",
 		},
+		{
+			name:   "unknown to free: error",
+			fields: createGameField(),
+			args: args{
+				fieldTypeFrom: "xxx",
+				indexFrom:     1,
+				fieldTypeTo:   "free",
+				indexTo:       2,
+			},
+			wantFields: GameField{},
+			wantErr:    true,
+			wantErrMsg: "invalid fieldTypeFrom xxx",
+		},
+		{
+			name:   "free to unknown: error",
+			fields: createGameField(),
+			args: args{
+				fieldTypeFrom: "free",
+				indexFrom:     3,
+				fieldTypeTo:   "xxx",
+				indexTo:       2,
+			},
+			wantFields: GameField{},
+			wantErr:    true,
+			wantErrMsg: "invalid fieldTypeTo xxx",
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
