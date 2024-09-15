@@ -7,6 +7,6 @@ type GameFieldBranch struct {
 	Cost int
 }
 
-func (gfb GameFieldBranch) CalcHashCode() [consts.LenHash]uint64 {
+func (gfb *GameFieldBranch) CalcHashCode() [consts.LenHash]uint64 {
 	return gfb.GF.CalcHashCode()
 }

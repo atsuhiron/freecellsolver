@@ -6,6 +6,9 @@ func EqualStack(stack1, stack2 *[]cards.Card) bool {
 	if len(*stack1) != len(*stack2) {
 		return false
 	}
+	if len(*stack1) == 0 {
+		return true
+	}
 	for i := range *stack1 {
 		if (*stack1)[i].Code != (*stack2)[i].Code {
 			return false

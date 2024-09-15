@@ -1176,3 +1176,195 @@ func TestGameField_move(t *testing.T) {
 		})
 	}
 }
+
+func TestGameField_clone(t *testing.T) {
+	type fields struct {
+		Homes  map[uint8]*cells.HomeCell
+		Frees  [consts.LenFre]*cells.FreeCell
+		Fields [consts.LenFie]*cells.FieldCell
+	}
+	tests := []struct {
+		name   string
+		fields fields
+		want   GameField
+	}{
+		{
+			name: "empty",
+			fields: fields{
+				Homes: map[uint8]*cells.HomeCell{
+					suits[0]: {
+						SuitCode:  suits[0],
+						CardStack: []cards.Card{},
+					},
+					suits[1]: {
+						SuitCode:  suits[1],
+						CardStack: []cards.Card{},
+					},
+					suits[2]: {
+						SuitCode:  suits[2],
+						CardStack: []cards.Card{},
+					},
+					suits[3]: {
+						SuitCode:  suits[3],
+						CardStack: []cards.Card{},
+					},
+				},
+				Frees: [consts.LenFre]*cells.FreeCell{
+					{CardStack: []cards.Card{}},
+					{CardStack: []cards.Card{}},
+					{CardStack: []cards.Card{}},
+					{CardStack: []cards.Card{}},
+				},
+				Fields: [consts.LenFie]*cells.FieldCell{
+					{CardStack: []cards.Card{}},
+					{CardStack: []cards.Card{}},
+					{CardStack: []cards.Card{}},
+					{CardStack: []cards.Card{}},
+					{CardStack: []cards.Card{}},
+					{CardStack: []cards.Card{}},
+					{CardStack: []cards.Card{}},
+					{CardStack: []cards.Card{}},
+				},
+			},
+			want: GameField{
+				Homes: map[uint8]*cells.HomeCell{
+					suits[0]: {
+						SuitCode:  suits[0],
+						CardStack: []cards.Card{},
+					},
+					suits[1]: {
+						SuitCode:  suits[1],
+						CardStack: []cards.Card{},
+					},
+					suits[2]: {
+						SuitCode:  suits[2],
+						CardStack: []cards.Card{},
+					},
+					suits[3]: {
+						SuitCode:  suits[3],
+						CardStack: []cards.Card{},
+					},
+				},
+				Frees: [consts.LenFre]*cells.FreeCell{
+					{CardStack: []cards.Card{}},
+					{CardStack: []cards.Card{}},
+					{CardStack: []cards.Card{}},
+					{CardStack: []cards.Card{}},
+				},
+				Fields: [consts.LenFie]*cells.FieldCell{
+					{CardStack: []cards.Card{}},
+					{CardStack: []cards.Card{}},
+					{CardStack: []cards.Card{}},
+					{CardStack: []cards.Card{}},
+					{CardStack: []cards.Card{}},
+					{CardStack: []cards.Card{}},
+					{CardStack: []cards.Card{}},
+					{CardStack: []cards.Card{}},
+				},
+			},
+		},
+		{
+			name: "filled",
+			fields: fields{
+				Homes: map[uint8]*cells.HomeCell{
+					suits[0]: {
+						SuitCode: suits[0],
+						CardStack: []cards.Card{
+							{Code: uint8(1)},
+							{Code: uint8(2)},
+							{Code: uint8(3)},
+						},
+					},
+					suits[1]: {
+						SuitCode:  suits[1],
+						CardStack: []cards.Card{},
+					},
+					suits[2]: {
+						SuitCode:  suits[2],
+						CardStack: []cards.Card{},
+					},
+					suits[3]: {
+						SuitCode:  suits[3],
+						CardStack: []cards.Card{},
+					},
+				},
+				Frees: [consts.LenFre]*cells.FreeCell{
+					{CardStack: []cards.Card{}},
+					{CardStack: []cards.Card{
+						{Code: uint8(17)},
+					}},
+					{CardStack: []cards.Card{}},
+					{CardStack: []cards.Card{}},
+				},
+				Fields: [consts.LenFie]*cells.FieldCell{
+					{CardStack: []cards.Card{}},
+					{CardStack: []cards.Card{}},
+					{CardStack: []cards.Card{}},
+					{CardStack: []cards.Card{}},
+					{CardStack: []cards.Card{
+						{Code: uint8(35)},
+					}},
+					{CardStack: []cards.Card{}},
+					{CardStack: []cards.Card{}},
+					{CardStack: []cards.Card{}},
+				},
+			},
+			want: GameField{
+				Homes: map[uint8]*cells.HomeCell{
+					suits[0]: {
+						SuitCode: suits[0],
+						CardStack: []cards.Card{
+							{Code: uint8(1)},
+							{Code: uint8(2)},
+							{Code: uint8(3)},
+						},
+					},
+					suits[1]: {
+						SuitCode:  suits[1],
+						CardStack: []cards.Card{},
+					},
+					suits[2]: {
+						SuitCode:  suits[2],
+						CardStack: []cards.Card{},
+					},
+					suits[3]: {
+						SuitCode:  suits[3],
+						CardStack: []cards.Card{},
+					},
+				},
+				Frees: [consts.LenFre]*cells.FreeCell{
+					{CardStack: []cards.Card{}},
+					{CardStack: []cards.Card{
+						{Code: uint8(17)},
+					}},
+					{CardStack: []cards.Card{}},
+					{CardStack: []cards.Card{}},
+				},
+				Fields: [consts.LenFie]*cells.FieldCell{
+					{CardStack: []cards.Card{}},
+					{CardStack: []cards.Card{}},
+					{CardStack: []cards.Card{}},
+					{CardStack: []cards.Card{}},
+					{CardStack: []cards.Card{
+						{Code: uint8(35)},
+					}},
+					{CardStack: []cards.Card{}},
+					{CardStack: []cards.Card{}},
+					{CardStack: []cards.Card{}},
+				},
+			},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			gf := &GameField{
+				Homes:  tt.fields.Homes,
+				Frees:  tt.fields.Frees,
+				Fields: tt.fields.Fields,
+			}
+			if got := gf.clone(); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("clone() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}

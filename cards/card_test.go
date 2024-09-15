@@ -105,29 +105,58 @@ func TestCard_ToReadableCard(t *testing.T) {
 		wantErr bool
 	}{
 		{
-			name:   "♠A",
-			fields: fields{uint8(1)}, // ♠A
-			want:   ReadableCard{"♠", "A"},
+			name:    "♠A",
+			fields:  fields{uint8(1)}, // ♠A
+			want:    ReadableCard{"♠", "A"},
+			wantErr: false,
 		},
 		{
-			name:   "♠2",
-			fields: fields{uint8(2)}, // ♠2
-			want:   ReadableCard{"♠", "2"},
+			name:    "♠2",
+			fields:  fields{uint8(2)}, // ♠2
+			want:    ReadableCard{"♠", "2"},
+			wantErr: false,
 		},
 		{
-			name:   "♥A",
-			fields: fields{uint8(17)}, // ♥A
-			want:   ReadableCard{"♥", "A"},
+			name:    "♥A",
+			fields:  fields{uint8(17)}, // ♥A
+			want:    ReadableCard{"♥", "A"},
+			wantErr: false,
 		},
 		{
-			name:   "♣10",
-			fields: fields{uint8(42)}, // ♣10
-			want:   ReadableCard{"♣", "10"},
+			name:    "♣10",
+			fields:  fields{uint8(42)}, // ♣10
+			want:    ReadableCard{"♣", "10"},
+			wantErr: false,
 		},
 		{
-			name:   "♦K",
-			fields: fields{uint8(61)}, // ♦K
-			want:   ReadableCard{"♦", "K"},
+			name:    "♦K",
+			fields:  fields{uint8(61)}, // ♦K
+			want:    ReadableCard{"♦", "K"},
+			wantErr: false,
+		},
+		{
+			name:    "♦Q",
+			fields:  fields{uint8(60)}, // ♦K
+			want:    ReadableCard{"♦", "Q"},
+			wantErr: false,
+		},
+		{
+			name:    "♦J",
+			fields:  fields{uint8(59)}, // ♦K
+			want:    ReadableCard{"♦", "J"},
+			wantErr: false,
+		},
+		{
+			name:    "error: out of suit range",
+			fields:  fields{uint8(81)}, // out of range
+			want:    ReadableCard{},
+			wantErr: true,
+		},
+		{
+			name:    "error: out of number range",
+			fields:  fields{uint8(63)}, // out of range
+			want:    ReadableCard{},
+			wantErr: true,
 		},
 	}
 	for _, tt := range tests {
