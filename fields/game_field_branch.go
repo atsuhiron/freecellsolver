@@ -4,7 +4,7 @@ import "github.com/freecellsolver/consts"
 
 type GameFieldBranch struct {
 	GF   GameField
-	Cost int
+	Cost int8
 }
 
 func (gfb *GameFieldBranch) CalcHashCode() [consts.LenHash]uint64 {

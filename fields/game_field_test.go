@@ -1368,3 +1368,180 @@ func TestGameField_clone(t *testing.T) {
 		})
 	}
 }
+
+func equalBranchAsSet(branches1, branches2 *[]GameFieldBranch) bool {
+	if len(*branches1) != len(*branches2) {
+		return false
+	}
+
+	found := make([]bool, len(*branches1))
+	for i, branch1 := range *branches1 {
+		for _, branch2 := range *branches2 {
+			if reflect.DeepEqual(branch1, branch2) {
+				found[i] = true
+				break
+			}
+		}
+	}
+
+	for _, res := range found {
+		if !res {
+			return false
+		}
+	}
+	return true
+}
+
+func TestGameField_GetBranch(t *testing.T) {
+	type fields struct {
+		Homes  map[uint8]*cells.HomeCell
+		Frees  [consts.LenFre]*cells.FreeCell
+		Fields [consts.LenFie]*cells.FieldCell
+	}
+	tests := []struct {
+		name    string
+		fields  fields
+		want    []GameFieldBranch
+		wantErr bool
+	}{
+		{
+			name: "one card",
+			fields: fields{
+				Homes: map[uint8]*cells.HomeCell{
+					suits[0]: {
+						SuitCode:  suits[0],
+						CardStack: []cards.Card{},
+					},
+					suits[1]: {
+						SuitCode:  suits[1],
+						CardStack: []cards.Card{},
+					},
+					suits[2]: {
+						SuitCode:  suits[2],
+						CardStack: []cards.Card{},
+					},
+					suits[3]: {
+						SuitCode:  suits[3],
+						CardStack: []cards.Card{},
+					},
+				},
+				Frees: [consts.LenFre]*cells.FreeCell{
+					{CardStack: []cards.Card{}},
+					{CardStack: []cards.Card{}},
+					{CardStack: []cards.Card{}},
+					{CardStack: []cards.Card{}},
+				},
+				Fields: [consts.LenFie]*cells.FieldCell{
+					{CardStack: []cards.Card{
+						{Code: uint8(1)},
+					}},
+					{CardStack: []cards.Card{}},
+					{CardStack: []cards.Card{}},
+					{CardStack: []cards.Card{}},
+					{CardStack: []cards.Card{}},
+					{CardStack: []cards.Card{}},
+					{CardStack: []cards.Card{}},
+					{CardStack: []cards.Card{}},
+				},
+			},
+			want: []GameFieldBranch{
+				{
+					GameField{
+						Homes: map[uint8]*cells.HomeCell{
+							suits[0]: {
+								SuitCode:  suits[0],
+								CardStack: []cards.Card{{Code: uint8(1)}},
+							},
+							suits[1]: {
+								SuitCode:  suits[1],
+								CardStack: []cards.Card{},
+							},
+							suits[2]: {
+								SuitCode:  suits[2],
+								CardStack: []cards.Card{},
+							},
+							suits[3]: {
+								SuitCode:  suits[3],
+								CardStack: []cards.Card{},
+							},
+						},
+						Frees: [consts.LenFre]*cells.FreeCell{
+							{CardStack: []cards.Card{}},
+							{CardStack: []cards.Card{}},
+							{CardStack: []cards.Card{}},
+							{CardStack: []cards.Card{}},
+						},
+						Fields: [consts.LenFie]*cells.FieldCell{
+							{CardStack: []cards.Card{}},
+							{CardStack: []cards.Card{}},
+							{CardStack: []cards.Card{}},
+							{CardStack: []cards.Card{}},
+							{CardStack: []cards.Card{}},
+							{CardStack: []cards.Card{}},
+							{CardStack: []cards.Card{}},
+							{CardStack: []cards.Card{}},
+						},
+					},
+					int8(-1),
+				},
+				{
+					GameField{
+						Homes: map[uint8]*cells.HomeCell{
+							suits[0]: {
+								SuitCode:  suits[0],
+								CardStack: []cards.Card{},
+							},
+							suits[1]: {
+								SuitCode:  suits[1],
+								CardStack: []cards.Card{},
+							},
+							suits[2]: {
+								SuitCode:  suits[2],
+								CardStack: []cards.Card{},
+							},
+							suits[3]: {
+								SuitCode:  suits[3],
+								CardStack: []cards.Card{},
+							},
+						},
+						Frees: [consts.LenFre]*cells.FreeCell{
+							{CardStack: []cards.Card{{Code: uint8(1)}}},
+							{CardStack: []cards.Card{}},
+							{CardStack: []cards.Card{}},
+							{CardStack: []cards.Card{}},
+						},
+						Fields: [consts.LenFie]*cells.FieldCell{
+							{CardStack: []cards.Card{}},
+							{CardStack: []cards.Card{}},
+							{CardStack: []cards.Card{}},
+							{CardStack: []cards.Card{}},
+							{CardStack: []cards.Card{}},
+							{CardStack: []cards.Card{}},
+							{CardStack: []cards.Card{}},
+							{CardStack: []cards.Card{}},
+						},
+					},
+					int8(1),
+				},
+			},
+			wantErr: false,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			gf := &GameField{
+				Homes:  tt.fields.Homes,
+				Frees:  tt.fields.Frees,
+				Fields: tt.fields.Fields,
+			}
+			got, err := gf.GetBranch()
+			if (err != nil) != tt.wantErr {
+				t.Errorf("GetBranch() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if !equalBranchAsSet(&got, &tt.want) {
+				t.Errorf("GetBranch() got = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}

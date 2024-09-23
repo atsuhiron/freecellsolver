@@ -23,20 +23,7 @@ func genCards() []Card {
 }
 */
 
-type MyStack struct {
-	IntStack []int
-}
-
-func (stack *MyStack) Place(seq []int) {
-	stack.IntStack = append(stack.IntStack, seq...)
-}
-
 func main() {
-	ms := MyStack{}
-	seq := []int{4}
-	ms.Place(seq)
-	fmt.Println(ms.IntStack)
-
 	ccard := cards.Card{Code: uint8(42)}
 	fmt.Printf("%v\n", ccard)
 	rcard, err := ccard.ToReadableCard()

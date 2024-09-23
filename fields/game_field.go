@@ -38,34 +38,118 @@ func (gf *GameField) IsFinished() bool {
 	return true
 }
 
-func (gf *GameField) GetBranch() []GameFieldBranch {
-	emptyFieldMum := 0
+func (gf *GameField) GetBranch() ([]GameFieldBranch, error) {
+	emptyFieldNum := 0
 	for i := 0; i < consts.LenFie; i++ {
 		if len(gf.Fields[i].CardStack) == 0 {
-			emptyFieldMum++
+			emptyFieldNum++
 		}
 	}
+	emptyFreeNum := 0
+	for i := 0; i < consts.LenFre; i++ {
+		if len(gf.Frees[i].CardStack) == 0 {
+			emptyFreeNum++
+		}
+	}
+	maxMovableCardNum := calcMaxMovableCardNum(emptyFreeNum, emptyFieldNum)
 
-	branch := make([]GameFieldBranch, 0, consts.LenFre+consts.LenFie)
+	branches := make([]GameFieldBranch, 0, consts.LenFre+consts.LenFie)
+
+	// from field
 	for iSrc := 0; iSrc < consts.LenFie; iSrc++ {
-		seq := gf.Fields[iSrc].GetEndSeq(false) // TODO: よく考える
-		if len(seq) == 0 {
+		seq := gf.Fields[iSrc].GetEndSeq(false)
+		seqSize := len(seq)
+		if seqSize == 0 {
+			continue
+		}
+		if seqSize > maxMovableCardNum {
 			continue
 		}
 
+		// to home
+		last := seq[seqSize-1]
+		suitCode := last.GetSuitCode()
+		if gf.Homes[suitCode].CanPlace(last) {
+			cloned := gf.clone()
+			err := cloned.move("field", iSrc, "home", int(suitCode))
+			if err != nil {
+				return branches, err
+			}
+			branches = append(branches, GameFieldBranch{cloned, -1})
+		}
+
+		// to field
+		movedEmptyField := len(gf.Fields[iSrc].CardStack) == len(seq)
 		for iTgt := 0; iTgt < consts.LenFie; iTgt++ {
 			if iTgt == iSrc {
 				// Move to self
 				continue
 			}
 
+			if len(gf.Fields[iTgt].CardStack) == 0 && !movedEmptyField {
+				// If target field is empty, it is allowed only first empty field
+				movedEmptyField = true
+			} else if len(gf.Fields[iTgt].CardStack) == 0 && movedEmptyField {
+				// To avoid duplication
+				continue
+			}
+
 			if gf.Fields[iTgt].CanPlace(seq[0]) {
-				// TODO: make branch!
-				branch = append(branch)
+				cloned := gf.clone()
+				err := cloned.move("field", iSrc, "field", iTgt)
+				if err != nil {
+					return branches, err
+				}
+				branches = append(branches, GameFieldBranch{cloned, 0})
+			}
+		}
+
+		// to free
+		for iTgt := 0; iTgt < consts.LenFre; iTgt++ {
+			if gf.Frees[iTgt].CanPlace(last) {
+				cloned := gf.clone()
+				err := cloned.move("field", iSrc, "free", iTgt)
+				if err != nil {
+					return branches, err
+				}
+				branches = append(branches, GameFieldBranch{cloned, 1})
+				break // To avoid duplication
 			}
 		}
 	}
-	return branch // TODO: Implement
+
+	// from free
+	for iSrc := 0; iSrc < consts.LenFre; iSrc++ {
+		seq := gf.Frees[iSrc].GetEndSeq(true)
+		if len(seq) == 0 {
+			continue
+		}
+
+		// to home
+		last := seq[0] // len(seq) == 1
+		suitCode := last.GetSuitCode()
+		if gf.Homes[suitCode].CanPlace(last) {
+			cloned := gf.clone()
+			err := cloned.move("free", iSrc, "home", int(suitCode))
+			if err != nil {
+				return branches, err
+			}
+			branches = append(branches, GameFieldBranch{cloned, -2})
+		}
+
+		// to field
+		for iTgt := 0; iTgt < consts.LenFie; iTgt++ {
+			if gf.Fields[iTgt].CanPlace(seq[0]) {
+				cloned := gf.clone()
+				err := cloned.move("free", iSrc, "field", iTgt)
+				if err != nil {
+					return branches, err
+				}
+				branches = append(branches, GameFieldBranch{cloned, 0})
+			}
+		}
+	}
+	return branches, nil
 }
 
 func calcMaxMovableCardNum(free int, field int) int {
