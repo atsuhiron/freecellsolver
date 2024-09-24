@@ -54,6 +54,7 @@ func (gf *GameField) GetBranch() ([]GameFieldBranch, error) {
 	maxMovableCardNum := calcMaxMovableCardNum(emptyFreeNum, emptyFieldNum)
 
 	branches := make([]GameFieldBranch, 0, consts.LenFre+consts.LenFie)
+	var movedEmptyField bool
 
 	// from field
 	for iSrc := 0; iSrc < consts.LenFie; iSrc++ {
@@ -79,7 +80,7 @@ func (gf *GameField) GetBranch() ([]GameFieldBranch, error) {
 		}
 
 		// to field
-		movedEmptyField := len(gf.Fields[iSrc].CardStack) == len(seq)
+		movedEmptyField = len(gf.Fields[iSrc].CardStack) == len(seq)
 		for iTgt := 0; iTgt < consts.LenFie; iTgt++ {
 			if iTgt == iSrc {
 				// Move to self
@@ -138,7 +139,16 @@ func (gf *GameField) GetBranch() ([]GameFieldBranch, error) {
 		}
 
 		// to field
+		movedEmptyField = false
 		for iTgt := 0; iTgt < consts.LenFie; iTgt++ {
+			if len(gf.Fields[iTgt].CardStack) == 0 && !movedEmptyField {
+				// If target field is empty, it is allowed only first empty field
+				movedEmptyField = true
+			} else if len(gf.Fields[iTgt].CardStack) == 0 && movedEmptyField {
+				// To avoid duplication
+				continue
+			}
+
 			if gf.Fields[iTgt].CanPlace(seq[0]) {
 				cloned := gf.clone()
 				err := cloned.move("free", iSrc, "field", iTgt)

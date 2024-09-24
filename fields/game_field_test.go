@@ -1405,7 +1405,7 @@ func TestGameField_GetBranch(t *testing.T) {
 		wantErr bool
 	}{
 		{
-			name: "one card",
+			name: "one card from field",
 			fields: fields{
 				Homes: map[uint8]*cells.HomeCell{
 					suits[0]: {
@@ -1522,6 +1522,126 @@ func TestGameField_GetBranch(t *testing.T) {
 						},
 					},
 					int8(1),
+				},
+			},
+			wantErr: false,
+		},
+		{
+			name: "one card from free",
+			fields: fields{
+				Homes: map[uint8]*cells.HomeCell{
+					suits[0]: {
+						SuitCode:  suits[0],
+						CardStack: []cards.Card{},
+					},
+					suits[1]: {
+						SuitCode:  suits[1],
+						CardStack: []cards.Card{},
+					},
+					suits[2]: {
+						SuitCode:  suits[2],
+						CardStack: []cards.Card{},
+					},
+					suits[3]: {
+						SuitCode:  suits[3],
+						CardStack: []cards.Card{},
+					},
+				},
+				Frees: [consts.LenFre]*cells.FreeCell{
+					{CardStack: []cards.Card{{Code: uint8(1)}}},
+					{CardStack: []cards.Card{}},
+					{CardStack: []cards.Card{}},
+					{CardStack: []cards.Card{}},
+				},
+				Fields: [consts.LenFie]*cells.FieldCell{
+					{CardStack: []cards.Card{}},
+					{CardStack: []cards.Card{}},
+					{CardStack: []cards.Card{}},
+					{CardStack: []cards.Card{}},
+					{CardStack: []cards.Card{}},
+					{CardStack: []cards.Card{}},
+					{CardStack: []cards.Card{}},
+					{CardStack: []cards.Card{}},
+				},
+			},
+			want: []GameFieldBranch{
+				{
+					GameField{
+						Homes: map[uint8]*cells.HomeCell{
+							suits[0]: {
+								SuitCode:  suits[0],
+								CardStack: []cards.Card{{Code: uint8(1)}},
+							},
+							suits[1]: {
+								SuitCode:  suits[1],
+								CardStack: []cards.Card{},
+							},
+							suits[2]: {
+								SuitCode:  suits[2],
+								CardStack: []cards.Card{},
+							},
+							suits[3]: {
+								SuitCode:  suits[3],
+								CardStack: []cards.Card{},
+							},
+						},
+						Frees: [consts.LenFre]*cells.FreeCell{
+							{CardStack: []cards.Card{}},
+							{CardStack: []cards.Card{}},
+							{CardStack: []cards.Card{}},
+							{CardStack: []cards.Card{}},
+						},
+						Fields: [consts.LenFie]*cells.FieldCell{
+							{CardStack: []cards.Card{}},
+							{CardStack: []cards.Card{}},
+							{CardStack: []cards.Card{}},
+							{CardStack: []cards.Card{}},
+							{CardStack: []cards.Card{}},
+							{CardStack: []cards.Card{}},
+							{CardStack: []cards.Card{}},
+							{CardStack: []cards.Card{}},
+						},
+					},
+					int8(-2),
+				},
+				{
+					GameField{
+						Homes: map[uint8]*cells.HomeCell{
+							suits[0]: {
+								SuitCode:  suits[0],
+								CardStack: []cards.Card{},
+							},
+							suits[1]: {
+								SuitCode:  suits[1],
+								CardStack: []cards.Card{},
+							},
+							suits[2]: {
+								SuitCode:  suits[2],
+								CardStack: []cards.Card{},
+							},
+							suits[3]: {
+								SuitCode:  suits[3],
+								CardStack: []cards.Card{},
+							},
+						},
+						Frees: [consts.LenFre]*cells.FreeCell{
+							{CardStack: []cards.Card{}},
+							{CardStack: []cards.Card{}},
+							{CardStack: []cards.Card{}},
+							{CardStack: []cards.Card{}},
+						},
+						Fields: [consts.LenFie]*cells.FieldCell{
+							{CardStack: []cards.Card{{Code: uint8(1)}}},
+							{CardStack: []cards.Card{}},
+							{CardStack: []cards.Card{}},
+							{CardStack: []cards.Card{}},
+							{CardStack: []cards.Card{}},
+							{CardStack: []cards.Card{}},
+							{CardStack: []cards.Card{}},
+							{CardStack: []cards.Card{}},
+						},
+					},
+					int8(0),
 				},
 			},
 			wantErr: false,
