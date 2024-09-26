@@ -5,6 +5,7 @@ import (
 	"github.com/freecellsolver/cells"
 	"github.com/freecellsolver/consts"
 	"reflect"
+	"strings"
 	"testing"
 )
 
@@ -1373,10 +1374,39 @@ func equalBranchAsSet(branches1, branches2 *[]GameFieldBranch) bool {
 	if len(*branches1) != len(*branches2) {
 		return false
 	}
+	if len(*branches1) == 0 {
+		return true
+	}
 
 	found := make([]bool, len(*branches1))
 	for i, branch1 := range *branches1 {
 		for _, branch2 := range *branches2 {
+			if reflect.DeepEqual(branch1, branch2) {
+				found[i] = true
+				break
+			}
+		}
+	}
+
+	for _, res := range found {
+		if !res {
+			return false
+		}
+	}
+	return true
+}
+
+func containBranchAsSet(largerBranches, smallerBranches *[]GameFieldBranch) bool {
+	if len(*smallerBranches) == 0 {
+		return true
+	}
+	if len(*largerBranches) == 0 {
+		return false
+	}
+
+	found := make([]bool, len(*smallerBranches))
+	for i, branch1 := range *smallerBranches {
+		for _, branch2 := range *largerBranches {
 			if reflect.DeepEqual(branch1, branch2) {
 				found[i] = true
 				break
@@ -1399,13 +1429,15 @@ func TestGameField_GetBranch(t *testing.T) {
 		Fields [consts.LenFie]*cells.FieldCell
 	}
 	tests := []struct {
-		name    string
-		fields  fields
-		want    []GameFieldBranch
-		wantErr bool
+		name     string
+		testMode string
+		fields   fields
+		want     []GameFieldBranch
+		wantErr  bool
 	}{
 		{
-			name: "one card from field",
+			name:     "one card from field",
+			testMode: "perfect match",
 			fields: fields{
 				Homes: map[uint8]*cells.HomeCell{
 					suits[0]: {
@@ -1527,7 +1559,8 @@ func TestGameField_GetBranch(t *testing.T) {
 			wantErr: false,
 		},
 		{
-			name: "one card from free",
+			name:     "one card from free",
+			testMode: "perfect match",
 			fields: fields{
 				Homes: map[uint8]*cells.HomeCell{
 					suits[0]: {
@@ -1646,6 +1679,130 @@ func TestGameField_GetBranch(t *testing.T) {
 			},
 			wantErr: false,
 		},
+		{
+			name:     "too large to move",
+			testMode: "perfect match",
+			fields: fields{
+				Homes: map[uint8]*cells.HomeCell{
+					suits[0]: {
+						SuitCode:  suits[0],
+						CardStack: []cards.Card{},
+					},
+					suits[1]: {
+						SuitCode:  suits[1],
+						CardStack: []cards.Card{},
+					},
+					suits[2]: {
+						SuitCode:  suits[2],
+						CardStack: []cards.Card{},
+					},
+					suits[3]: {
+						SuitCode:  suits[3],
+						CardStack: []cards.Card{},
+					},
+				},
+				Frees: [consts.LenFre]*cells.FreeCell{
+					{CardStack: []cards.Card{{Code: uint8(50)}}}, // ♦2
+					{CardStack: []cards.Card{{Code: uint8(52)}}}, // ♦4
+					{CardStack: []cards.Card{{Code: uint8(53)}}}, // ♦5
+					{CardStack: []cards.Card{{Code: uint8(54)}}}, // ♦6
+				},
+				Fields: [consts.LenFie]*cells.FieldCell{
+					{CardStack: []cards.Card{{Code: uint8(55)}}},                   // ♦7
+					{CardStack: []cards.Card{{Code: uint8(56)}}},                   // ♦8
+					{CardStack: []cards.Card{{Code: uint8(57)}}},                   // ♦9
+					{CardStack: []cards.Card{{Code: uint8(58)}}},                   // ♦10
+					{CardStack: []cards.Card{{Code: uint8(59)}}},                   // ♦J
+					{CardStack: []cards.Card{{Code: uint8(60)}}},                   // ♦Q
+					{CardStack: []cards.Card{{Code: uint8(19)}, {Code: uint8(2)}}}, // ♥3 ♠2
+					{CardStack: []cards.Card{{Code: uint8(4)}}},                    // ♠4
+				},
+			},
+			want:    []GameFieldBranch{},
+			wantErr: false,
+		},
+		{
+			name:     "field to field",
+			testMode: "contain",
+			fields: fields{
+				Homes: map[uint8]*cells.HomeCell{
+					suits[0]: {
+						SuitCode:  suits[0],
+						CardStack: []cards.Card{},
+					},
+					suits[1]: {
+						SuitCode:  suits[1],
+						CardStack: []cards.Card{},
+					},
+					suits[2]: {
+						SuitCode:  suits[2],
+						CardStack: []cards.Card{},
+					},
+					suits[3]: {
+						SuitCode:  suits[3],
+						CardStack: []cards.Card{},
+					},
+				},
+				Frees: [consts.LenFre]*cells.FreeCell{
+					{CardStack: []cards.Card{}},
+					{CardStack: []cards.Card{{Code: uint8(52)}}}, // ♦4
+					{CardStack: []cards.Card{{Code: uint8(53)}}}, // ♦5
+					{CardStack: []cards.Card{{Code: uint8(54)}}}, // ♦6
+				},
+				Fields: [consts.LenFie]*cells.FieldCell{
+					{CardStack: []cards.Card{{Code: uint8(55)}}},                   // ♦7
+					{CardStack: []cards.Card{{Code: uint8(56)}}},                   // ♦8
+					{CardStack: []cards.Card{{Code: uint8(57)}}},                   // ♦9
+					{CardStack: []cards.Card{{Code: uint8(58)}}},                   // ♦10
+					{CardStack: []cards.Card{{Code: uint8(59)}}},                   // ♦J
+					{CardStack: []cards.Card{{Code: uint8(60)}}},                   // ♦Q
+					{CardStack: []cards.Card{{Code: uint8(19)}, {Code: uint8(2)}}}, // ♥3 ♠2
+					{CardStack: []cards.Card{{Code: uint8(4)}}},                    // ♠4
+				},
+			},
+			want: []GameFieldBranch{
+				{
+					GF: GameField{
+						Homes: map[uint8]*cells.HomeCell{
+							suits[0]: {
+								SuitCode:  suits[0],
+								CardStack: []cards.Card{},
+							},
+							suits[1]: {
+								SuitCode:  suits[1],
+								CardStack: []cards.Card{},
+							},
+							suits[2]: {
+								SuitCode:  suits[2],
+								CardStack: []cards.Card{},
+							},
+							suits[3]: {
+								SuitCode:  suits[3],
+								CardStack: []cards.Card{},
+							},
+						},
+						Frees: [consts.LenFre]*cells.FreeCell{
+							{CardStack: []cards.Card{}},
+							{CardStack: []cards.Card{{Code: uint8(52)}}}, // ♦4
+							{CardStack: []cards.Card{{Code: uint8(53)}}}, // ♦5
+							{CardStack: []cards.Card{{Code: uint8(54)}}}, // ♦6
+						},
+						Fields: [consts.LenFie]*cells.FieldCell{
+							{CardStack: []cards.Card{{Code: uint8(55)}}}, // ♦7
+							{CardStack: []cards.Card{{Code: uint8(56)}}}, // ♦8
+							{CardStack: []cards.Card{{Code: uint8(57)}}}, // ♦9
+							{CardStack: []cards.Card{{Code: uint8(58)}}}, // ♦10
+							{CardStack: []cards.Card{{Code: uint8(59)}}}, // ♦J
+							{CardStack: []cards.Card{{Code: uint8(60)}}}, // ♦Q
+							{CardStack: []cards.Card{}},
+							{CardStack: []cards.Card{{Code: uint8(4)}, {Code: uint8(19)}, {Code: uint8(2)}}}, // ♠4 ♥3 ♠2
+						},
+					},
+					Cost: 0,
+				},
+			},
+			wantErr: false,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -1659,8 +1816,17 @@ func TestGameField_GetBranch(t *testing.T) {
 				t.Errorf("GetBranch() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
-			if !equalBranchAsSet(&got, &tt.want) {
-				t.Errorf("GetBranch() got = %v, want %v", got, tt.want)
+
+			if strings.EqualFold(tt.testMode, "perfect match") {
+				if !equalBranchAsSet(&got, &tt.want) {
+					t.Errorf("GetBranch() got = %v, want to EQUAL %v", got, tt.want)
+				}
+			} else if strings.EqualFold(tt.testMode, "contain") {
+				if !containBranchAsSet(&got, &tt.want) {
+					t.Errorf("GetBranch() got = %v, want to CONTAIN %v", got, tt.want)
+				}
+			} else {
+				t.Errorf("Invalid testMode %v", tt.testMode)
 			}
 		})
 	}
