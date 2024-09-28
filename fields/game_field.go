@@ -216,7 +216,7 @@ func calcFieldHash(fields [consts.LenFie]*cells.FieldCell) [consts.MaxFieNum]uin
 			fieldCardCodes[i][1] = uint64(cell.CardStack[0].Code)
 		}
 	}
-	sort.Sort(fieldCardCodes)
+	sort.Sort(&fieldCardCodes)
 
 	sortedField := [consts.LenFie][]cards.Card{}
 	for i, ivp := range fieldCardCodes {
@@ -304,10 +304,10 @@ func (gf *GameField) move(fieldTypeFrom string, indexFrom int, fieldTypeTo strin
 
 type indexValue64 [][2]uint64
 
-func (iv indexValue64) Len() int      { return len(iv) }
-func (iv indexValue64) Swap(i, j int) { iv[i], iv[j] = iv[j], iv[i] }
-func (iv indexValue64) Less(i, j int) bool {
+func (iv *indexValue64) Len() int { return len(*iv) }
+func (iv *indexValue64) Less(i, j int) bool {
 	// To implement it as its name(Less) suggests, the slice need to be reverse.
-	// To avoid this step, the inequality signs are reversed (`<` -> `<`).
-	return iv[i][1] > iv[j][1]
+	// To avoid this step, the inequality signs are reversed (`<` -> `>`).
+	return (*iv)[i][1] > (*iv)[j][1]
 }
+func (iv *indexValue64) Swap(i, j int) { (*iv)[i], (*iv)[j] = (*iv)[j], (*iv)[i] }

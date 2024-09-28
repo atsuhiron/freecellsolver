@@ -10,3 +10,9 @@ type GameFieldBranch struct {
 func (gfb *GameFieldBranch) CalcHashCode() [consts.LenHash]uint64 {
 	return gfb.GF.CalcHashCode()
 }
+
+type BranchLattice []GameFieldBranch
+
+func (bl *BranchLattice) Len() int           { return len(*bl) }
+func (bl *BranchLattice) Less(i, j int) bool { return (*bl)[i].Cost < (*bl)[j].Cost }
+func (bl *BranchLattice) Swap(i, j int)      { (*bl)[i], (*bl)[j] = (*bl)[j], (*bl)[i] }
