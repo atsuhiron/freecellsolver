@@ -38,7 +38,21 @@ func (gf *GameField) IsFinished() bool {
 	return true
 }
 
-func (gf *GameField) GetBranch() ([]GameFieldBranch, error) {
+func (gf *GameField) GetBranch() []GameField {
+	lattice, err := gf.getBranchCore()
+	if err != nil {
+		panic(err)
+	}
+
+	sort.Sort(&lattice)
+	branches := make([]GameField, len(lattice))
+	for i, gfb := range lattice {
+		branches[i] = gfb.GF
+	}
+	return branches
+}
+
+func (gf *GameField) getBranchCore() (BranchLattice, error) {
 	emptyFieldNum := 0
 	for i := 0; i < consts.LenFie; i++ {
 		if len(gf.Fields[i].CardStack) == 0 {
@@ -53,7 +67,7 @@ func (gf *GameField) GetBranch() ([]GameFieldBranch, error) {
 	}
 	maxMovableCardNum := calcMaxMovableCardNum(emptyFreeNum, emptyFieldNum)
 
-	branches := make([]GameFieldBranch, 0, consts.LenFre+consts.LenFie)
+	branches := make(BranchLattice, 0, consts.LenFre+consts.LenFie)
 	var movedEmptyField bool
 
 	// from field

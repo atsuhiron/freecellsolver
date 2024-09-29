@@ -1370,7 +1370,7 @@ func TestGameField_clone(t *testing.T) {
 	}
 }
 
-func equalBranchAsSet(branches1, branches2 *[]GameFieldBranch) bool {
+func equalBranchAsSet(branches1, branches2 *BranchLattice) bool {
 	if len(*branches1) != len(*branches2) {
 		return false
 	}
@@ -1396,7 +1396,7 @@ func equalBranchAsSet(branches1, branches2 *[]GameFieldBranch) bool {
 	return true
 }
 
-func containBranchAsSet(largerBranches, smallerBranches *[]GameFieldBranch) bool {
+func containBranchAsSet(largerBranches, smallerBranches *BranchLattice) bool {
 	if len(*smallerBranches) == 0 {
 		return true
 	}
@@ -1432,7 +1432,7 @@ func TestGameField_GetBranch(t *testing.T) {
 		name     string
 		testMode string
 		fields   fields
-		want     []GameFieldBranch
+		want     BranchLattice
 		wantErr  bool
 	}{
 		{
@@ -1476,7 +1476,7 @@ func TestGameField_GetBranch(t *testing.T) {
 					{CardStack: []cards.Card{}},
 				},
 			},
-			want: []GameFieldBranch{
+			want: BranchLattice{
 				{
 					GameField{
 						Homes: map[uint8]*cells.HomeCell{
@@ -1597,7 +1597,7 @@ func TestGameField_GetBranch(t *testing.T) {
 					{CardStack: []cards.Card{}},
 				},
 			},
-			want: []GameFieldBranch{
+			want: BranchLattice{
 				{
 					GameField{
 						Homes: map[uint8]*cells.HomeCell{
@@ -1718,7 +1718,7 @@ func TestGameField_GetBranch(t *testing.T) {
 					{CardStack: []cards.Card{{Code: uint8(4)}}},                    // ♠4
 				},
 			},
-			want:    []GameFieldBranch{},
+			want:    BranchLattice{},
 			wantErr: false,
 		},
 		{
@@ -1760,7 +1760,7 @@ func TestGameField_GetBranch(t *testing.T) {
 					{CardStack: []cards.Card{{Code: uint8(4)}}},                    // ♠4
 				},
 			},
-			want: []GameFieldBranch{
+			want: BranchLattice{
 				{
 					GF: GameField{
 						Homes: map[uint8]*cells.HomeCell{
@@ -1811,19 +1811,19 @@ func TestGameField_GetBranch(t *testing.T) {
 				Frees:  tt.fields.Frees,
 				Fields: tt.fields.Fields,
 			}
-			got, err := gf.GetBranch()
+			got, err := gf.getBranchCore()
 			if (err != nil) != tt.wantErr {
-				t.Errorf("GetBranch() error = %v, wantErr %v", err, tt.wantErr)
+				t.Errorf("getBranchCore() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
 
 			if strings.EqualFold(tt.testMode, "perfect match") {
 				if !equalBranchAsSet(&got, &tt.want) {
-					t.Errorf("GetBranch() got = %v, want to EQUAL %v", got, tt.want)
+					t.Errorf("getBranchCore() got = %v, want to EQUAL %v", got, tt.want)
 				}
 			} else if strings.EqualFold(tt.testMode, "contain") {
 				if !containBranchAsSet(&got, &tt.want) {
-					t.Errorf("GetBranch() got = %v, want to CONTAIN %v", got, tt.want)
+					t.Errorf("getBranchCore() got = %v, want to CONTAIN %v", got, tt.want)
 				}
 			} else {
 				t.Errorf("Invalid testMode %v", tt.testMode)
